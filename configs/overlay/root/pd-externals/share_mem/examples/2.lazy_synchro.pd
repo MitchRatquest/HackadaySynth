@@ -1,0 +1,25 @@
+#N canvas 289 256 626 385 10;
+#X declare -path ..;
+#N canvas 0 22 450 300 (subpatch) 0;
+#X array data 100 float 2;
+#X coords 0 1 99 0 200 140 1;
+#X restore 374 162 graph;
+#X msg 48 194 pd~ stop;
+#X text 133 262 synchronised reading;
+#X msg 29 260 memdump 0 data;
+#X obj 512 20 loadbang;
+#X msg 512 41 \; pd dsp 1;
+#X text 44 116 launch subprocess;
+#X obj 29 62 declare -path ..;
+#X text 26 329 reading the shared memory is made maximum 20 audio block
+(pd~ round trip fifo) after pd~ set the value.;
+#X obj 29 284 shmem 1002 100;
+#X obj 29 222 pd~ -ninsig 0 -noutsig 0 -fifo 20;
+#X msg 29 136 pd~ start lazy_synchro-subprocess.pd;
+#X text 30 23 Basic synchronised sharing of memory data between two
+pd instances;
+#X connect 1 0 10 0;
+#X connect 3 0 9 0;
+#X connect 4 0 5 0;
+#X connect 10 0 3 0;
+#X connect 11 0 10 0;

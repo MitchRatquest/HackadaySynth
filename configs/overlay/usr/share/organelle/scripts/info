@@ -1,0 +1,9 @@
+#!/bin/sh
+oscsend 127.0.0.1 4000 /oled/aux/erase 
+oscsend 127.0.0.1 4000 /oled/aux/3 s "`df -h | awk '$NF=="/"{printf "Disk Used: %d/%d MB (%s)\n", $3,$2,$5}'`"
+oscsend 127.0.0.1 4000 /oled/aux/4 s "CPU Usage: `uptime | awk '{print $9}' | sed 's/,//g'`"
+oscsend 127.0.0.1 4000 /oled/aux/5 s "`free -m | awk 'NR==2{printf "RAM Used:  %s/%s MB (%.2f%%)\n", $3,$2,$3*100/$2 }'`"
+
+oscsend 127.0.0.1 4000 /oled/setscreen i 1
+oscsend 127.0.0.1 4000 /oled/setscreen i 1 
+exit 0

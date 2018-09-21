@@ -1,0 +1,10 @@
+#!/bin/sh
+
+modprobe spidev
+modprobe fbtft_device custom name=fb_ili9341 gpios=reset:1,dc:201,led:6 speed=32000000 busnum=32766 rotate=90 bgr=1
+modprobe fb_ili9341
+
+con2fbmap 2
+#setsid sh -c 'exec python /root/panel <> /dev/tty1 >&0 2>&1'
+
+exit 0

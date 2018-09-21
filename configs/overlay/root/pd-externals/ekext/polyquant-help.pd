@@ -1,0 +1,61 @@
+#N canvas 0 0 655 328 10;
+#X text 286 48 creation arguments: tempo polyrhythm-depth;
+#X text 294 92 depth 1: half \, quarter \, eighth notes etc;
+#X text 294 105 depth 2: + triplets;
+#X text 294 118 depth 3: + triplets and quintuplets;
+#X text 294 132 depth 4: + triplets \, quintuplets and septuplets;
+#X text 302 12 polyquant is a polyrhythmic quantizer;
+#X text 294 148 and so on \, adding 11th \, 13th \, 17th \, 19th \,
+23rd \, 29th \, 31th \, 37th \, 41th \, 43th \, 47th \, 53th \, 59th
+and 61th divisions of the beat;
+#X obj 66 88 timer;
+#X floatatom 66 252 5 0 0 1 time - -;
+#X floatatom 95 236 5 0 0 1 division - -;
+#X floatatom 124 221 5 0 0 1 number - -;
+#X floatatom 153 206 5 0 0 1 sign - -;
+#X obj 66 187 polyquant 140 4;
+#X obj 66 67 t b b;
+#X obj 52 38 metro 200;
+#X floatatom 66 110 5 0 0 0 - - -;
+#X text 294 63 tempo is in beats-per-minute;
+#X obj 52 14 loadbang;
+#X msg 114 103 mode \$1;
+#X obj 114 84 hradio 15 1 0 3 empty empty empty 0 -8 0 10 -262144 -1
+-1 1;
+#X floatatom 173 116 5 1 18 2 polyrhythmic_depth - -;
+#X text 295 77 polyrhythm depth is explained below;
+#X obj 116 28 random 1800;
+#X text 272 202 sign: -1 means the input time is less than the output
+time \, 1 means the input time is greater than the output time;
+#X text 272 229 number: number of notes of division value of the quantized
+output;
+#X text 272 257 division: division of the beat (8th \, 16th \, 6th
+\, 20th etc);
+#X text 272 275 time: quantized time value;
+#X obj 116 50 + 50;
+#X msg 173 132 plimit \$1;
+#X text 162 64 0 = both;
+#X text 162 75 1 = always lengthen;
+#X text 162 86 2 = always shorten;
+#X text 131 69 MODE:;
+#X floatatom 240 136 5 60 180 2 BPM - -;
+#X msg 240 152 bpm \$1;
+#X connect 7 0 15 0;
+#X connect 12 0 8 0;
+#X connect 12 1 9 0;
+#X connect 12 2 10 0;
+#X connect 12 3 11 0;
+#X connect 13 0 7 0;
+#X connect 13 1 7 1;
+#X connect 13 1 22 0;
+#X connect 14 0 13 0;
+#X connect 15 0 12 0;
+#X connect 17 0 14 0;
+#X connect 18 0 12 0;
+#X connect 19 0 18 0;
+#X connect 20 0 28 0;
+#X connect 22 0 27 0;
+#X connect 27 0 14 1;
+#X connect 28 0 12 0;
+#X connect 33 0 34 0;
+#X connect 34 0 12 0;

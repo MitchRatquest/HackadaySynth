@@ -1,0 +1,22 @@
+#N canvas 497 205 515 359 10;
+#X text 31 305 the first argument sets how many frames to record;
+#X obj 71 221 fsrecordctrl 100;
+#X obj 217 252 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 71 252 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 368 256 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 368 221 fsrecordctrl 300;
+#X obj 217 221 fsrecordctrl 200;
+#X obj 71 105 frameclock 400;
+#X text 33 16 A record controller based on total frames for attaching
+to [writesf~]. Enable recording by clicking the embedded toggle \,
+it will automatically start and stop recording based on the frame clock.
+;
+#X connect 1 0 3 0;
+#X connect 5 0 4 0;
+#X connect 6 0 2 0;
+#X connect 7 0 1 0;
+#X connect 7 0 5 0;
+#X connect 7 0 6 0;

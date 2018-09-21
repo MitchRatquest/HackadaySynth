@@ -1,0 +1,33 @@
+#!/bin/sh
+#boot from flash: boot0 low, reset high
+#reset is tied to gpio21 now, 10k pullup on blue pill
+#boot tied to gpio20, 150k pulldown to ground
+
+#ONLY NEED TO PASS THE BIN FILEPATH
+
+boot=20
+reset=21
+if [ ! -d /sys/class/gpio/gpio$boot ]; then echo $boot > /sys/class/gpio/export; fi
+if [ ! -d /sys/class/gpio/gpio$reset ]; then echo $reset > /sys/class/gpio/export; fi
+
+echo out > /sys/class/gpio/gpio$boot/direction
+echo out > /sys/class/gpio/gpio$reset/direction
+
+echo 1 > /sys/class/gpio/gpio$boot/value
+echo 0 > /sys/class/gpio/gpio$reset/value
+echo 1 > /sys/class/gpio/gpio$reset/value
+
+stm32flash -w $1 /dev/ttyS1
+success=$? #stm32flash error code
+
+echo 0 > /sys/class/gpio/gpio$boot/value
+echo 0 > /sys/class/gpio/gpio$reset/value
+echo 1 > /sys/class/gpio/gpio$reset/value
+
+echo $boot > /sys/class/gpio/unexport
+echo $reset > /sys/class/gpio/unexport
+
+
+if [ $success -ge 1 ]; then echo "you fucked up" | figlet; else echo "you succeeded" | figlet;  fi
+
+

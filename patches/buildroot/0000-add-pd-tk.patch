@@ -1,0 +1,131 @@
+--- a/package/Config.in	2017-05-25 14:10:17.310337000 -0500
++++ b/package/Config.in	2017-05-25 18:12:12.459952513 -0500
+@@ -4,6 +4,7 @@
+ 	source "package/skeleton/Config.in"
+ 
+ menu "Audio and video applications"
++	source "package/puredata/Config.in"
+ 	source "package/alsa-utils/Config.in"
+ 	source "package/atest/Config.in"
+ 	source "package/aumix/Config.in"
+@@ -239,6 +240,7 @@
+ menu "Graphic libraries and applications (graphic/text)"
+ 
+ comment "Graphic applications"
++	source "package/tk/Config.in"
+ 	source "package/expedite/Config.in"
+ 	source "package/fswebcam/Config.in"
+ 	source "package/ghostscript/Config.in"
+
+--- a/package/puredata/Config.in	1969-12-31 18:00:00.000000000 -0600
++++ b/package/puredata/Config.in	2017-05-25 18:19:12.070549743 -0500
+@@ -0,0 +1,10 @@
++config BR2_PACKAGE_PUREDATA
++	bool "puredata"
++	select BR2_PACKAGE_GETTEXT
++	select BR2_PACKAGE_MPLAYER
++	select BR2_PACKAGE_TK
++	select BR2_PACKAGE_TCL
++	
++	help
++		graphic realtime audio programming language
++
+--- a/package/puredata/puredata.mk	2017-05-25 14:10:17.310337000 -0500
++++ b/package/puredata/puredata.mk	2017-05-25 18:18:50.406831167 -0500
+@@ -0,0 +1,22 @@
++################################################################################
++#
++# puredata
++#
++################################################################################
++
++PUREDATA_VERSION =  0.49-0test3
++PUREDATA_SOURCE = pd-$(PUREDATA_VERSION).src.tar.gz
++PUREDATA_SITE = http://msp.ucsd.edu/Software
++PUREDATA_INSTALL_STAGING = YES
++PUREDATA_INSTALL_TARGET = YES
++PUREDATA_AUTORECONF = YES 
++PUREDATA_CONF_OPTS = --disable-portaudio --disable-portmidi --no-recursion
++
++PUREDATA_DEPENDENCIES = alsa-utils mplayer gettext tcl tk
++
++define PUREDATA_RUN_AUTOGEN
++	cd $(@D) && PATH=$(BR_PATH) ./autogen.sh
++endef
++PUREDATA_PRE_CONFIGURE_HOOKS += PUREDATA_RUN_AUTOGEN
++
++$(eval $(autotools-package))
+--- a/package/tk/Config.in	2017-05-25 14:10:17.310337000 -0500
++++ b/package/tk/Config.in	2017-05-25 18:21:11.780994980 -0500
+@@ -0,0 +1,5 @@
++config BR2_PACKAGE_TK
++	bool "tk"
++	depends on BR2_PACKAGE_TCL
++	help
++		Graphics library using tcl
+--- a/package/tk/tk.mk	1969-12-31 18:00:00.000000000 -0600
++++ b/package/tk/tk.mk	2017-05-25 18:20:04.197872651 -0500
+@@ -0,0 +1,19 @@
++################################################################################
++#
++# tk
++#
++################################################################################
++
++TK_VERSION = 8.6.6
++TK_SOURCE = tk$(TK_VERSION)-src.tar.gz
++TK_SITE = http://downloads.sourceforge.net/tcl
++TK_INSTALL_STAGING = YES
++TK_INSTALL_TARGET = YES
++TK_SUBDIR = unix 
++TK_DEPENDENCIES = tcl
++
++TK_CONF = YES
++TK_CONF_OPTS = --with-tcl=$(TOPDIR)/../build/tcl-8.6.6/unix
++
++
++$(eval $(autotools-package))
+--- a/package/tk/0001-no-strtod.patch 14:10:17.310337000 -0500
++++ b/package/tk/0001-no-strtod.patch	2017-05-25 14:57:20.597056975 -0500
+@@ -0,0 +1,15 @@
++--- a/unix/configure	2016-07-26 09:07:50.000000000 -0500
+++++ b/unix/configure	2017-05-23 22:23:14.024124144 -0500
++@@ -8415,9 +8415,9 @@
++ 
++ 	    USE_COMPAT=1
++ 
++-cat >>confdefs.h <<\_ACEOF
+++#cat >>confdefs.h <<\_ACEOF
++ #define strtod fixstrtod
++-_ACEOF
+++#_ACEOF
++ 
++ 	fi
++     fi
++
+--- a/package/openssh/0001-x11.patch	1969-12-31 18:00:00.000000000 -0600
++++ b/package/openssh/0001-x11.patch	2017-05-25 20:20:19.323632887 -0500
+@@ -0,0 +1,23 @@
++--- openssh-7.5p1/sshd_config.orig	2017-05-25 20:18:03.789205136 -0500
+++++ openssh-7.5p1/sshd_config	2017-05-25 20:18:26.380943383 -0500
++@@ -30,7 +30,7 @@
++ # Authentication:
++ 
++ #LoginGraceTime 2m
++-#PermitRootLogin prohibit-password
+++PermitRootLogin yes
++ #StrictModes yes
++ #MaxAuthTries 6
++ #MaxSessions 10
++@@ -85,8 +85,8 @@
++ #AllowAgentForwarding yes
++ #AllowTcpForwarding yes
++ #GatewayPorts no
++-#X11Forwarding no
++-#X11DisplayOffset 10
+++X11Forwarding yes
+++X11DisplayOffset 10
++ #X11UseLocalhost yes
++ #PermitTTY yes
++ #PrintMotd yes
++

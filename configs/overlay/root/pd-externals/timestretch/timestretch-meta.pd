@@ -1,0 +1,9 @@
+#N canvas 10 10 200 200 10;
+#N canvas 20 20 420 300 META 0;
+#X text 10 10 META this is a prototype of a libdir meta file;
+#X text 10 10 NAME timestretch;
+#X text 10 10 AUTHOR ;
+#X text 10 10 DESCRIPTION ;
+#X text 10 10 LICENSE ;
+#X text 10 10 VERSION ;
+#X restore 10 10 pd META;
