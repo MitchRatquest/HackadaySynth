@@ -29,7 +29,7 @@
 
 #tty3::respawn:/sbin/getty -L tty3 115200 xterm-256color -n -l /root/osc2.py
 
-tty4::respawn:/sbin/getty -L tty4 115200 xterm-256color -n -l /usr/share/organelle/mainmenu.py >/dev/null 2>&1
+tty4::respawn:/sbin/getty -L tty4 115200 xterm-256color -n -l /usr/share/organelle/mainmenu/mainmenu.py >/dev/null 2>&1
 
 
 #console::respawn:/sbin/getty  console tty1 screen-256color -l python /root/panel
