@@ -8,14 +8,6 @@
  	source "package/alsa-utils/Config.in"
  	source "package/atest/Config.in"
  	source "package/aumix/Config.in"
-@@ -239,6 +240,7 @@
- menu "Graphic libraries and applications (graphic/text)"
- 
- comment "Graphic applications"
-+	source "package/tk/Config.in"
- 	source "package/expedite/Config.in"
- 	source "package/fswebcam/Config.in"
- 	source "package/ghostscript/Config.in"
 
 --- a/package/puredata/Config.in	1969-12-31 18:00:00.000000000 -0600
 +++ b/package/puredata/Config.in	2017-05-25 18:19:12.070549743 -0500
@@ -43,10 +35,10 @@
 +PUREDATA_SITE = http://msp.ucsd.edu/Software
 +PUREDATA_INSTALL_STAGING = YES
 +PUREDATA_INSTALL_TARGET = YES
-+PUREDATA_AUTORECONF = YES 
++PUREDATA_AUTORECONF = YES
 +PUREDATA_CONF_OPTS = --disable-portaudio --disable-portmidi --no-recursion
 +
-+PUREDATA_DEPENDENCIES = alsa-utils mplayer gettext tcl tk
++PUREDATA_DEPENDENCIES = alsa-utils gettext tcl tk
 +
 +define PUREDATA_RUN_AUTOGEN
 +	cd $(@D) && PATH=$(BR_PATH) ./autogen.sh
