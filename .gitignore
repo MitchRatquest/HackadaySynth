@@ -1,0 +1,12 @@
+buildroot-2018.11.1/
+buildroot-2018.11.1.tar.gz
+build/
+host/
+images/
+target/
+staging
+Makefile
+.br-external.mk
+.config
+.config.old
+..config.tmp
