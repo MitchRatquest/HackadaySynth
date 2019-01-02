@@ -70,7 +70,7 @@ class panelGen:
 		command = "setfont " + self.font + "<> /dev/tty4 >&0 2>&1"
 		subprocess.call(command, shell=True)
 		subprocess.call("chvt 4", shell=True) #assumes fbtft_ili9341 connected
-		bash('stty rows 240 cols 320')
+		#bash('stty rows 240 cols 320')
 	def changeFont(self):
 		command = 'setfont ' + self.font + ' <> /dev/tty4 >&0 2>&1 \n'#really need to change it for pixel font
 		bash(command)
@@ -548,13 +548,19 @@ class MenuItem:
 				'''
 		else:
 			bash('oscsend 127.0.0.1 4001 /quitpd i 1') #first quit existing patch
-			escapedString =''
+			escapedString = str(self.menuItems[self.index])
+			time.sleep(.12)
+			'''
 			for b in self.menuItems[self.index]:
 				if b == "'" or b=="!" or b==" " or b=='$' or b=='(': #special bash characters in path names
 					escapedString+= '\\'+b
 				else:
 					escapedString += b
+					'''
 			if x11Forwarding(): #gui on, audiobuf 10, run it on screen instance if it exists
+				bash('oscsend 127.0.0.1 4001 /openpatch s "' + self.userDir + escapedString +'"')
+				#sendOSCPD("/openpatch", self.userDir + escapedString)
+				'''
 				command = 'screen -S chamble -X stuff "pd -audioindev 5 -audiooutdev 5 -inchannels 2 -outchannels 2 -blocksize 64 -audiobuf 10 /usr/share/organelle/mother/mother.pd ' \
 				+self.userDir + escapedString +'/main.pd  2> /dev/null & \n"'
 				a=bash(command)
@@ -565,8 +571,11 @@ class MenuItem:
 				self.pid = int(bash('cat /run/patch.pid')[0]) #nicer!
 				oled.erase()
 				oled.show()
-				
+				'''
 			else: #basically -nogui and -audiobuf 6
+				bash('oscsend 127.0.0.1 4001 /openpatch s "' + self.userDir + escapedString + '"')
+				#sendOSCPD("/openpatch", self.userDir + escapedString)
+				'''
 				bash('/usr/share/organelle/scripts/resetScreen.sh') #just reset the fucking thing
 				command = 'screen -S chamble -X stuff "pd -nogui -audioindev 5 -audiooutdev 5 -inchannels 2 -outchannels 2 -blocksize 64 -audiobuf 6 -r 44100 '+ \
 				self.Mother + ' ' + self.userDir + str(escapedString) + '/main.pd 2> /dev/null & \n"'
@@ -575,6 +584,7 @@ class MenuItem:
 				bash(self.setPid) #put the pid in a file!
 				bash(self.chrt) #make sure its RT priority!
 				bash(self.taskset) #run it on an reserved CPU!
+				'''
 
 def stopPD():
 	bash('kill -9 `cat /run/patch.pid`')
@@ -767,6 +777,6 @@ enc(0,0,'0',0) #so main screen shows
 enc(0,0,'1',0)
 
 while True:
-	bash('''if [ ! $(pgrep pd | grep $(cat /run/comport.pid)) ]; then pd -nogui -noaudio /usr/share/organelle/comporthandler/papa2.pd 2>/dev/null & echo $! > /run/comport.pid ;fi''') #make sure comport is up!!
+#	bash('''if [ ! $(pgrep pd | grep $(cat /run/comport.pid)) ]; then pd -nogui -noaudio /usr/share/organelle/comporthandler/papa2.pd 2>/dev/null & echo $! > /run/comport.pid ;fi''') #make sure comport is up!!
 	time.sleep(1)
-
+	
