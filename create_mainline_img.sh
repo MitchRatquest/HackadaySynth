@@ -8,7 +8,7 @@ then
 fi
 
 cd buildroot-"$VERSION"
-patch -p1 < ../patches/buildroot/0000-add-pd-tk.patch
+patch -p1 < ../patches/buildroot/0000-add-pd.patch
 cd ..
 
 
