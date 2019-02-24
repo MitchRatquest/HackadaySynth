@@ -136,9 +136,9 @@ case "$1" in
 	if [ $mass == 1 ]; then
 		mass_storage_setup
 	fi
-#	if [ $midi == 1 ]; then 
-#		midi_setup
-#	fi
+	if [ $midi == 1 ]; then 
+		midi_setup
+	fi
 #	if [ $hid == 1 ]; then
 #		hid_setup
 #	fi

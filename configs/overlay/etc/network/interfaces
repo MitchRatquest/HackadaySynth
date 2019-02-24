@@ -16,10 +16,10 @@ iface usb0 inet static
 allow-hotplug wlan0
 iface wlan0 inet dhcp
 	address 192.168.0.152
-#	netmask 255.255.255.0	
+#	netmask 255.255.255.0
 #	gateway 192.168.0.1
-	wpa-ssid ChimChim
-	wpa-psk e5734d611654134a4bb2c8d966829ce8cd87ce5c9b1a7fffc33dc06464afd39b
+#	wpa-ssid "NETWORK"
+#	wpa-psk USEWPASUPPLICANT
 #
 #	hostapd /etc/hostapd.conf
 #	address 192.168.8.8

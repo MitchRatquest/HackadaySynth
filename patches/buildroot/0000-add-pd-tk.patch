@@ -30,7 +30,7 @@
 +#
 +################################################################################
 +
-+PUREDATA_VERSION =  0.49-0
++PUREDATA_VERSION =  0.49-0test5
 +PUREDATA_SOURCE = pd-$(PUREDATA_VERSION).src.tar.gz
 +PUREDATA_SITE = http://msp.ucsd.edu/Software
 +PUREDATA_INSTALL_STAGING = YES
