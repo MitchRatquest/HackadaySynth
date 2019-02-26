@@ -1,9 +1,8 @@
-
---- a/arch/arm/boot/dts/sun8i-h3-nanopi-neo.dts.orig	2017-11-13 21:28:44.652450710 -0600
-+++ b/arch/arm/boot/dts/sun8i-h3-nanopi-neo.dts	2017-11-13 21:32:27.387356689 -0600
-@@ -46,3 +46,61 @@
- 	model = "FriendlyARM NanoPi NEO";
- 	compatible = "friendlyarm,nanopi-neo", "allwinner,sun8i-h3";
+--- a/arch/arm/boot/dts/sun8i-h3-nanopi-neo.dts	2018-10-20 02:47:10.000000000 -0500
++++ b/arch/arm/boot/dts/sun8i-h3-nanopi-neo.dts	2019-02-24 15:54:57.104077961 -0600
+@@ -70,3 +70,62 @@
+ &usbphy {
+ 	usb0_id_det-gpios = <&pio 6 12 GPIO_ACTIVE_HIGH>; /* PG12 */
  };
 +&usb_otg {
 +	dr_mode = "otg";
@@ -47,20 +46,20 @@
 +	status = "okay";
 +};
 +
-+&spi0 {
++&i2c0 {
 +	status = "okay";
-+	 spidev {
-+		compatible = "spidev";
-+		status = "okay";
-+		reg = <0>;
-+		spi-max-frequency = <1000000>;
-+	};
 +};
-+
 +
 +&uart1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&uart1_pins>;
 +	status = "okay";
 +};
 +
-+
-
++&codec {
++	allwinner,audio-routing =
++		"Line Out", "LINEOUT",
++		"MIC1", "Mic",
++		"Mic",  "MBIAS";
++	status = "okay";
++};

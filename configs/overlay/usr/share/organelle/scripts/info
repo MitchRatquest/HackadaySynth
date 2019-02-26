@@ -1,8 +1,30 @@
 #!/bin/sh
 oscsend 127.0.0.1 4000 /oled/aux/erase 
-oscsend 127.0.0.1 4000 /oled/aux/3 s "`df -h | awk '$NF=="/"{printf "Disk Used: %d/%d MB (%s)\n", $3,$2,$5}'`"
-oscsend 127.0.0.1 4000 /oled/aux/4 s "CPU Usage: `uptime | awk '{print $9}' | sed 's/,//g'`"
-oscsend 127.0.0.1 4000 /oled/aux/5 s "`free -m | awk 'NR==2{printf "RAM Used:  %s/%s MB (%.2f%%)\n", $3,$2,$3*100/$2 }'`"
+oscsend 127.0.0.1 4000 /oled/aux/1 s "`df -h | awk '$NF=="/"{printf "Disk Used: %d/%d MB (%s)\n", $3,$2,$5}'`"
+oscsend 127.0.0.1 4000 /oled/aux/2 s "CPU Usage: `uptime | awk '{print $9}' | sed 's/,//g'`"
+oscsend 127.0.0.1 4000 /oled/aux/3 s "`free -m | awk 'NR==2{printf "RAM Used:  %s/%s MB (%.2f%%)\n", $3,$2,$3*100/$2 }'`"
+
+chgpercent=$(i2cget -y 0 0x55 0x2C)
+oscsend 127.0.0.1 4000 /oled/aux/4 s "battery at `printf "%d" $chgpercent`%"
+
+tempLSB=$(i2cget -y 0 0x55 0x06)
+tempMSB=$(i2cget -y 0 0x55 0x07)
+temp=$(( (tempMSB << 8) + tempLSB))
+
+oscsend 127.0.0.1 4000 /oled/aux/5 s "battery temp at $(( ($temp - 2730) / 10)) degrees C"
+
+voltsLSB=$(i2cget -y 0 0x55 0x08)
+voltsMSB=$(i2cget -y 0 0x55 0x09)
+voltage=$(( (voltsMSB << 8) + voltsLSB))
+actualV=$(echo "$voltage/1000.0" | bc -l | sed 's/0//g')
+
+oscsend 127.0.0.1 4000 /oled/aux/6 s "battery voltage: $actualV (max ~4.15)"
+
+oscsend 127.0.0.1 4000 /oled/aux/8 s "Kernel: `uname -r`"
+oscsend 127.0.0.1 4000 /oled/aux/9 s "SSH session: `if [ $(ps aux | grep ssh | wc | awk '{print $1}') -ge 3 ]; then printf "yes!"; else printf "no"; fi`"
+oscsend 127.0.0.1 4000 /oled/aux/10 s "External USB sound card: ` if [ $(aplay -l | grep -i usb | wc) -ge 2 ]; then printf "yes!"; else printf "no"; fi`"
+
+#oscsend 127.0.0.1 4000 /oled/aux/10 s "BIRD MAN BIRD MAN BIRD MAN"
 
 oscsend 127.0.0.1 4000 /oled/setscreen i 1
 oscsend 127.0.0.1 4000 /oled/setscreen i 1 
