@@ -14,14 +14,17 @@ echo out > /sys/class/gpio/gpio$boot/direction
 echo out > /sys/class/gpio/gpio$reset/direction
 
 echo 1 > /sys/class/gpio/gpio$boot/value
+sleep .1
 echo 0 > /sys/class/gpio/gpio$reset/value
 echo 1 > /sys/class/gpio/gpio$reset/value
+sleep .1
 
 stm32flash -w $1 /dev/ttyS1
 success=$? #stm32flash error code
 
 echo 0 > /sys/class/gpio/gpio$boot/value
 echo 0 > /sys/class/gpio/gpio$reset/value
+sleep .1
 echo 1 > /sys/class/gpio/gpio$reset/value
 
 echo $boot > /sys/class/gpio/unexport
