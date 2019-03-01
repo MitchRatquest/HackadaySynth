@@ -42,3 +42,4 @@
 ::shutdown:/etc/init.d/rcK
 ::shutdown:/sbin/swapoff -a
 ::shutdown:/bin/umount -a -r
+::shutdown:/usr/bin/killboost

@@ -7,7 +7,9 @@
 #and this to use them:
 #orca --portmidi-output-device 0
 export LD_LIBRARY_PATH=/lib:/usr/local/lib/orca
+export TERM=xterm-256color
 modprobe snd_seq
 modprobe snd_seq_virmidi
 modprobe snd_virmidi
-/usr/local/lib/orca
+exec /usr/local/lib/orca/orca "$@"
+
