@@ -15,12 +15,16 @@ echo out > /sys/class/gpio/gpio$reset/direction
 
 echo 1 > /sys/class/gpio/gpio$boot/value
 sleep .1
+#wait $1
 echo 0 > /sys/class/gpio/gpio$reset/value
 echo 1 > /sys/class/gpio/gpio$reset/value
+wait $1
 sleep .1
+wait $1
 
 stm32flash -w $1 /dev/ttyS1
 success=$? #stm32flash error code
+wait $1
 
 echo 0 > /sys/class/gpio/gpio$boot/value
 echo 0 > /sys/class/gpio/gpio$reset/value
