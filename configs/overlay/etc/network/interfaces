@@ -7,23 +7,13 @@ iface lo inet loopback
 #iface eth0 inet dhcp
 #	wait-delay 15
 
-allow-hotplug usb0
+auto usb0
 iface usb0 inet static
 	wait-delay 15
 	address 192.168.100.1
 	netmask 255.255.255.0
+	gateway 192.168.100.1
 
-allow-hotplug wlan0
+auto wlan0
 iface wlan0 inet dhcp
-	address 192.168.0.152
-#	netmask 255.255.255.0	
-#	gateway 192.168.0.1
-	wpa-ssid ChimChim
-	wpa-psk e5734d611654134a4bb2c8d966829ce8cd87ce5c9b1a7fffc33dc06464afd39b
-#
-#	hostapd /etc/hostapd.conf
-#	address 192.168.8.8
-#	netmask 255.255.255.0
-#	wireless-channel 1
-#	wireless-essid BIGBOYYYYYYY
-#	wireless-mode ad-hoc
+	wpa-conf /etc/wpa_supplicant.conf
