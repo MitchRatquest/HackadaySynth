@@ -13,4 +13,4 @@ cd ..
 
 
 make O=$PWD -C buildroot-"$VERSION"/ defconfig BR2_DEFCONFIG=../configs/buildroot_defconfig
-make
+make -j$(nproc)
