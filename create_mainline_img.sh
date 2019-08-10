@@ -1,16 +1,16 @@
 #!/bin/bash
-VERSION=2017.11-rc1
+VERSION=fb65f4841845f63d32f8f6f246a7aaac21074d49
 
-if [ ! -d buildroot-"$VERSION" ]
+if [ ! -d rockchip-buildroot ]
 then
-	wget https://git.busybox.net/buildroot/snapshot/buildroot-"$VERSION".tar.gz
-	tar zvxf buildroot-"$VERSION".tar.gz
+	git clone https://github.com/rockchip-linux/buildroot.git rockchip-buildroot
 fi
 
-cd buildroot-"$VERSION"
+cd rockchip-buildroot
+git checkout "$VERSION"
 patch -p1 < ../patches/buildroot/0000-add-pd-tk.patch
 cd ..
 
 
-make O=$PWD -C buildroot-"$VERSION"/ defconfig BR2_DEFCONFIG=../configs/buildroot_defconfig
+make O=$PWD -C rockchip-buildroot/ defconfig BR2_DEFCONFIG=../configs/buildroot_defconfig
 make
