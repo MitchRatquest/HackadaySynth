@@ -10,11 +10,10 @@
  	source "package/aumix/Config.in"
 --- a/package/puredata/Config.in	1969-12-31 18:00:00.000000000 -0600
 +++ b/package/puredata/Config.in	2017-05-25 18:19:12.070549743 -0500
-@@ -0,0 +1,10 @@
+@@ -0,0 +1,9 @@
 +config BR2_PACKAGE_PUREDATA
 +	bool "puredata"
 +	select BR2_PACKAGE_GETTEXT
-+	select BR2_PACKAGE_MPLAYER
 +	select BR2_PACKAGE_TK
 +	select BR2_PACKAGE_TCL
 +	
