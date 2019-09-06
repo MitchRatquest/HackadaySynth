@@ -14,7 +14,7 @@ make uboot-menuconfig
 make busybox-menuconfig
 ```
   
-  While in any of those menus, you can use '/' to search for a string, which is insanely helpful and I somehow managed to create the first try of this without it. For years. Its a beautiful feature. 
+  While in any of those menus, you can use `/` to search for a string, which is insanely helpful and I somehow managed to create the first try of this without it. For years. Its a beautiful feature. 
 
   
 </details>
