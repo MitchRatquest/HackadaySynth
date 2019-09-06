@@ -1,7 +1,7 @@
 ## Overview
 
 <details>
-  <summary> ##Getting Started</summary>
+  <summary>Getting Started</summary>
   ```console
   ./create_mainline_img.sh
   ```
@@ -11,7 +11,7 @@
 </details>
 
 <details>
-  <summary>##Buildroot configuration</summary> 
+  <summary>Buildroot configuration</summary> 
   
   
   Buildroot is simpler and takes up less space than yocto. You can get started like this:
