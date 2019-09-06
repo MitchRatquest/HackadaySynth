@@ -2,9 +2,10 @@
 
 <details>
   <summary>Getting Started</summary>
-  ```console
-  ./create_mainline_img.sh
-  ```
+
+```console
+./create_mainline_img.sh
+```
   That should get buildroot in this directory, unpack it, and patch it to add the packages the synth requires. (future plans include making this entire repo a buildroot external, which is the correct way to go about this)
 
   Once this completes, you should have a build in images/sdcard.img, which you can `dd` to an SD card or use etcher to write to an sd card. 
@@ -12,7 +13,6 @@
 
 <details>
   <summary>Buildroot configuration</summary> 
-  
   
   Buildroot is simpler and takes up less space than yocto. You can get started like this:
 
