@@ -2,7 +2,7 @@
 
 
 <details>
-  <summary>Buildroot configuration</summary>
+  <summary> Buildroot configuration </summary> 
  
 	Buildroot better than yocto, do this
 ```console
