@@ -4,8 +4,8 @@
 <details>
   <summary>Buildroot configuration</summary>
  
-	You use buildroot like 
-```bash
+	Buildroot better than yocto, do this
+```console
 example make menuconfig
 ``` 
   
