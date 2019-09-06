@@ -3,8 +3,8 @@
 
 <details>
   <summary>Buildroot configuration</summary> 
- 
-	Buildroot better than yocto, do this
+   
+  Buildroot better than yocto, do this
 
 ```console
 example make menuconfig
