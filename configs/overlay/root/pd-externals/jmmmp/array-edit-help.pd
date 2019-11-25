@@ -1,3 +1,0 @@
-#N canvas 345 87 450 300 10;
-#X obj 175 132 array-edit;
-#X text 150 90 GUI patch for editing arrays;

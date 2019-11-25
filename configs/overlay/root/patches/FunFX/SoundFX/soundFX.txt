@@ -1,7 +1,0 @@
-Boing1;
-Boing2;
-Bounce1;
-Reload;
-Fire;
-Drop;
-DoorCreak;

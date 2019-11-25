@@ -1,8 +1,0 @@
---- a/configs/nanopi_neo_defconfig	2017-01-09 10:57:05.000000000 -0600
-+++ b/configs/nanopi_neo_defconfig2017-08-04 11:22:58.919584521 -0500
-@@ -19,3 +19,4 @@
- CONFIG_SUN8I_EMAC=y
- CONFIG_USB_EHCI_HCD=y
- CONFIG_SYS_USB_EVENT_POLL_VIA_INT_QUEUE=y
-+CONFIG_BOOTDELAY=0
-

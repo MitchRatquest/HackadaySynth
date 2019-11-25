@@ -1,8 +1,0 @@
-PassThruSeq passSeq;
-Arper arper;
-Genny genny;
-ChordRoll croll;
-NoteRepeat nr;
-Sequncer2 seq2;
-Punchy punchy;
-PPBeats pb;

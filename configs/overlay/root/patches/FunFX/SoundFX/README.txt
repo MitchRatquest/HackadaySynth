@@ -1,1 +1,0 @@
-This patch uses the example Puredata patches from the text book: 'Designing Sound' Farnell, Andy. The MIT Press, Cambridge Massachusetts.

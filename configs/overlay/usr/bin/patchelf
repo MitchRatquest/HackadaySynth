@@ -1,3 +1,0 @@
-#!/bin/sh
-export LD_LIBRARY_PATH=/lib:/usr/local/lib/patchelf/shlibs
-exec /usr/lib/patchelf/ "$@"

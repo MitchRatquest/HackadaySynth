@@ -1,8 +1,0 @@
-./drivers/net/wireless/mediatek/mt7601u/dma.h
-
-mac80211
-mt7601u
-RTL8723AU/RTL8188modprobe 8i
-
-
-_SIT = $(call github, lwfinger, rtl8188eu, 77471b4361aca8cb44ecd2ce27545dd526c6c118)

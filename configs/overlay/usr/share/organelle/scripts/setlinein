@@ -1,7 +1,0 @@
-
-#!/bin/sh
-alsactl --file /usr/share/organelle/asound.state.linein restore
-oscsend 127.0.0.1 4000 /oled/aux/erase
-oscsend 127.0.0.1 4000 /oled/aux/3 s "your input method is via line in now"
-oscsend 127.0.0.1 4000 /oled/setscreen 
-oscsend 127.0.0.1 4000 /oled/setscreen
