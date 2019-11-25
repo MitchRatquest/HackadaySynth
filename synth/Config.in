@@ -1,1 +1,3 @@
 source "$BR2_EXTERNAL_SYNTH_PATH/package/puredata/Config.in"
+source "$BR2_EXTERNAL_SYNTH_PATH/package/orca/Config.in"
+source "$BR2_EXTERNAL_SYNTH_PATH/package/trx/Config.in"

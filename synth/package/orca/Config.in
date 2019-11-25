@@ -1,0 +1,8 @@
+config BR2_PACKAGE_ORCA
+	bool "orca"
+	select BR2_PACKAGE_NCURSES
+	
+	help
+		ncurses atypical sequencer
+
+
