@@ -1,0 +1,15 @@
+#from this friendly  blog: https://blog.christophersmart.com/2016/10/23/building-and-booting-upstream-linux-and-u-boot-for-orange-pi-one-arm-board/
+
+# [v4,01/10] ethernet: add sun8i-emac driver
+wget https://patchwork.kernel.org/patch/9365783/raw/ \
+-O sun8i-emac-patch-1.patch
+ 
+ 
+# [v4,09/10] ARM: sunxi: Enable sun8i-emac driver on sunxi_defconfig
+wget https://patchwork.kernel.org/patch/9365779/raw/ \
+-O sun8i-emac-patch-9.patch
+
+
+RT patch from https://www.kernel.org/pub/linux/kernel/projects/rt/4.11/
+
+dts files patch from diffing with https://github.com/megous/linux orangepi one patches, and using http://vjordan.info/log/fpga/nanopi-neo-usb-otg-with-armbian-mainline-4x-kernel.html#id29 as a guide

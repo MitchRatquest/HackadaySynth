@@ -1,0 +1,151 @@
+--- a/arch/arm/boot/dts/sun8i-h3.dtsi	2017-07-05 07:41:56.000000000 -0500
++++ b/arch/arm/boot/dts/sun8i-h3.dtsi	2017-07-29 19:53:00.000000000 -0500
+@@ -140,6 +140,11 @@
+ 		#size-cells = <1>;
+ 		ranges;
+ 
++		syscon: syscon@01c00000 {
++			compatible = "syscon";
++			reg = <0x01c00000 0x1000>;
++		};
++
+ 		dma: dma-controller@01c02000 {
+ 			compatible = "allwinner,sun8i-h3-dma";
+ 			reg = <0x01c02000 0x1000>;
+@@ -206,6 +211,21 @@
+ 			#size-cells = <0>;
+ 		};
+ 
++
++		usb_otg: usb@01c19000 {
++			compatible = "allwinner,sun8i-h3-musb";
++			reg = <0x01c19000 0x400>;
++			clocks = <&ccu CLK_BUS_OTG>;
++			resets = <&ccu RST_BUS_OTG>;
++			interrupts = <GIC_SPI 71 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "mc";
++			phys = <&usbphy 0>;
++			phy-names = "usb";
++			extcon = <&usbphy 0>;
++			status = "disabled";
++		};
++
++
+ 		usbphy: phy@01c19400 {
+ 			compatible = "allwinner,sun8i-h3-usb-phy";
+ 			reg = <0x01c19400 0x2c>,
+@@ -238,6 +258,25 @@
+ 			#phy-cells = <1>;
+ 		};
+ 
++		ehci0: usb@01c1a000 {
++			compatible = "allwinner,sun8i-h3-ehci", "generic-ehci";
++			reg = <0x01c1a000 0x100>;
++			interrupts = <GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&ccu CLK_BUS_EHCI0>, <&ccu CLK_BUS_OHCI0>;
++			resets = <&ccu RST_BUS_EHCI0>, <&ccu RST_BUS_OHCI0>;
++			status = "disabled";
++		};
++
++		ohci0: usb@01c1a400 {
++			compatible = "allwinner,sun8i-h3-ohci", "generic-ohci";
++			reg = <0x01c1a400 0x100>;
++			interrupts = <GIC_SPI 73 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&ccu CLK_BUS_EHCI0>, <&ccu CLK_BUS_OHCI0>,
++				 <&ccu CLK_USB_OHCI0>;
++			resets = <&ccu RST_BUS_EHCI0>, <&ccu RST_BUS_OHCI0>;
++			status = "disabled";
++		};
++
+ 		ehci1: usb@01c1b000 {
+ 			compatible = "allwinner,sun8i-h3-ehci", "generic-ehci";
+ 			reg = <0x01c1b000 0x100>;
+@@ -588,6 +627,30 @@
+ 			#size-cells = <0>;
+ 		};
+ 
++		emac: ethernet@1c30000 {
++			compatible = "allwinner,sun8i-h3-emac";
++			syscon = <&syscon>;
++			reg = <0x01c30000 0x104>;
++			interrupts = <GIC_SPI 82 IRQ_TYPE_LEVEL_HIGH>;
++			resets = <&ccu RST_BUS_EMAC>;
++			reset-names = "ahb";
++			clocks = <&ccu CLK_BUS_EMAC>;
++			clock-names = "ahb";
++			#address-cells = <1>;
++			#size-cells = <0>;
++			status = "disabled";
++
++			mdio: mdio {
++				#address-cells = <1>;
++				#size-cells = <0>;
++				int_mii_phy: ethernet-phy@1 {
++					reg = <1>;
++					clocks = <&ccu CLK_BUS_EPHY>;
++					resets = <&ccu RST_BUS_EPHY>;
++				};
++			};
++		};
++
+ 		gic: interrupt-controller@01c81000 {
+ 			compatible = "arm,cortex-a7-gic", "arm,cortex-a15-gic";
+ 			reg = <0x01c81000 0x1000>,
+
+--- a/arch/arm/boot/dts/sun8i-h3-nanopi.dtsi	2017-07-05 07:41:56.000000000 -0500
++++ b/arch/arm/boot/dts/sun8i-h3-nanopi.dtsi	2017-07-29 20:22:00.000000000 -0500
+@@ -52,6 +52,7 @@
+ / {
+ 	aliases {
+ 		serial0 = &uart0;
++        ethernet0 = &emac;
+ 	};
+ 
+ 	chosen {
+@@ -90,6 +91,13 @@
+ 	};
+ };
+ 
++&emac {
++	phy-handle = <&int_mii_phy>;
++	phy-mode = "mii";
++	allwinner,leds-active-low;
++	status = "okay";
++};
++
+ &ehci3 {
+ 	status = "okay";
+ };
+@@ -133,6 +141,13 @@
+ 	status = "okay";
+ };
+ 
++&usb_otg {
++	dr_mode = "otg";
++	status = "okay";
++};
++
+ &usbphy {
++	/* USB Type-A port's VBUS is always on */
++	usb0_id_det-gpios = <&pio 6 12 GPIO_ACTIVE_HIGH>; /* PG12 */
+ 	status = "okay";
+ };
+
+--- a/arch/arm/boot/dts/sun8i-h3-nanopi.dtsi	2017-07-29 20:35:17.928133119 -0500
++++ b/arch/arm/boot/dts/sun8i-h3-nanopi.dtsi	2017-07-29 21:08:25.229796305 -0500
+@@ -141,6 +141,14 @@
+ 	status = "okay";
+ };
+ 
++&ohci0 {
++	status = "okay";
++};
++
++&ehci0 {
++	status = "okay";
++};
++
+ &usb_otg {
+ 	dr_mode = "otg";
+ 	status = "okay";
+

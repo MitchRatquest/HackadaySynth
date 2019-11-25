@@ -1,0 +1,62 @@
+#N canvas 432 355 859 564 10;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array src1 100 float 1;
+#A 0 0.328571 0.307143 0.285714 0.257143 0.235714 0.214286 0.171429
+0.157143 0.157143 0.128572 0.0714288 3.57628e-07 -0.0428567 -0.0857137
+-0.199999 -0.257142 -0.314285 -0.42857 -0.485713 -0.542856 -0.657141
+-0.707141 -0.757141 -0.799998 -0.842855 -0.928569 -0.971426 -1.01428
+-1.07143 -0.714284 -0.257142 0.285714 3.57628e-07 -0.257142 -0.371427
+-0.457142 -0.571427 -0.62857 -0.642855 -0.585713 -0.499999 -0.385713
+-0.321428 -0.257142 -0.199999 -0.142856 -0.0857137 -0.028571 0.0714288
+0.121429 0.242857 0.314285 0.114286 -0.128571 -0.342856 -0.471427 -0.485713
+-0.228571 -0.0714281 0.0571431 0.2 0.257143 0.314285 0.414285 0.528571
+0.457142 0.364285 0.271428 0.0714288 -0.0214282 -0.114285 -0.199999
+-0.285713 -0.364285 -0.442856 -0.492856 -0.542856 -0.62857 -0.671427
+-0.685712 -0.685712 -0.62857 -0.542856 -0.492856 -0.442856 -0.404761
+-0.366666 -0.32857 -0.264285 -0.199999 -0.15238 -0.104761 -0.0571424
+-0.00952343 0.0380955 0.0857145 0.128572 0.171429 0.214286 0.614285
+;
+#X coords 0 1 99 -1 200 140 1;
+#X restore 537 27 graph;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array dst 100 float 0;
+#X coords 0 1 99 -1 200 140 1;
+#X restore 540 217 graph;
+#X obj 61 31 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 61 106 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 60 264 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X msg 78 199 dst dst;
+#X msg 60 170 src1 src1;
+#X text 108 465 IEM KUG;
+#X text 88 453 musil;
+#X text 122 453 @;
+#X text 130 453 iem.at;
+#X text 91 475 Graz \, Austria;
+#X text 174 269 initial arguments:;
+#X text 73 243 <bang> output;
+#X text 129 198 <dst> xxx : change destination name;
+#X text 225 86 the minimum of the 3 array lengths);
+#X text 123 170 <src1> xxx : change source name 1;
+#X text 151 283 1.arg: <symbol> source-name 1;
+#X text 212 72 (the number of samples which were added are:;
+#X text 43 442 (c) Thomas Musil 2000 - 2009;
+#X text 12 3 tab_max;
+#X text 90 29 <bang> max the 2 src-arrays to dst-array;
+#X text 54 420 ch \, help file based on :;
+#X text 152 299 2.arg: <symbol> destination-name;
+#X obj 34 156 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 60 225 tab_derivate dst dst;
+#X obj 61 78 tab_derivate src1 dst;
+#X msg 89 53 20;
+#X text 123 54 only first 20 points;
+#X connect 2 0 26 0;
+#X connect 5 0 25 0;
+#X connect 6 0 25 0;
+#X connect 24 0 25 0;
+#X connect 25 0 4 0;
+#X connect 26 0 3 0;
+#X connect 27 0 26 0;

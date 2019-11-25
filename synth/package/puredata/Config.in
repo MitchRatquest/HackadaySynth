@@ -1,0 +1,9 @@
+config BR2_PACKAGE_PUREDATA
+	bool "puredata"
+	select BR2_PACKAGE_GETTEXT
+	select BR2_PACKAGE_TK
+	select BR2_PACKAGE_TCL
+	
+	help
+		graphic realtime audio programming language
+

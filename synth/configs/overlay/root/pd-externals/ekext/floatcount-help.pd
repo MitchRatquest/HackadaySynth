@@ -1,0 +1,71 @@
+#N canvas 0 0 904 424 10;
+#X obj 80 105 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X floatatom 115 322 0 0 0 3 floatcount - -;
+#X floatatom 126 306 3 0 0 1 int - -;
+#X msg 378 245 2;
+#X floatatom 137 274 0 0 0 3 remainder - -;
+#X text 114 18 set low limit \, high limit and stepsize;
+#X msg 145 65 low 98.5;
+#X msg 145 88 high 32.6;
+#X msg 204 65 low -3.1;
+#X msg 209 88 high 102;
+#X msg 278 131 step 1.2;
+#X msg 335 131 step -1.2;
+#X obj 22 148 metro 500;
+#X msg 378 226 200;
+#X msg 331 171 step 203.4;
+#X text 398 170 <----;
+#X text 290 64 High and low limits are set so that the high limit is
+higher than the low one. If a low limit is set higher than the high
+limit or vice-versa \, the limits are automatically swapped around
+so that the high is higher than the low.;
+#X text 258 64 <----;
+#X text 430 130 Step values may be positive or negative. If the step
+value is positive \, then the count proceeds upwards. If the step value
+is negative \, then the count proceed downwards.;
+#X text 430 170 Step values that are greater than (high - low) are
+wrapped into the range \, i.e. they are divided by the range and the
+remainder is used as the step value.;
+#X text 398 130 <----;
+#X text 263 89 <---;
+#X msg 378 264 23.1754;
+#X text 405 245 <----;
+#X text 438 244 A float sets the counter to the value. If the value
+is within the range it will be output at the next bang. If it is outside
+the range \, the counter will count towards the range by modifying
+each successive count by the range itself.;
+#X text 557 362 (c) 2010 Edward Kelly;
+#X obj 22 17 loadbang;
+#X text 70 91 count!;
+#X msg 115 33 low 3.2 \, high 86.52 \, step 3.14159;
+#X obj 172 208 bng 15 250 50 0 empty empty wrap 17 7 0 10 -262144 -1
+-1;
+#X floatatom 160 226 2 0 0 1 sign - -;
+#X floatatom 149 242 0 0 0 3 wrapped_difference - -;
+#X obj 115 170 floatcount;
+#X obj 111 361 floatcount 2.364 27 -83.1 4;
+#X text 281 361 Creation args: step \, high \, low \, initial value
+;
+#X text 370 29 floatcount is a float counter.;
+#X connect 0 0 32 0;
+#X connect 3 0 32 0;
+#X connect 6 0 32 0;
+#X connect 7 0 32 0;
+#X connect 8 0 32 0;
+#X connect 9 0 32 0;
+#X connect 10 0 32 0;
+#X connect 11 0 32 0;
+#X connect 12 0 32 0;
+#X connect 13 0 32 0;
+#X connect 14 0 32 0;
+#X connect 22 0 32 0;
+#X connect 26 0 28 0;
+#X connect 26 0 12 0;
+#X connect 28 0 32 0;
+#X connect 32 0 1 0;
+#X connect 32 1 2 0;
+#X connect 32 2 4 0;
+#X connect 32 3 31 0;
+#X connect 32 4 30 0;
+#X connect 32 5 29 0;

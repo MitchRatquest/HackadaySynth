@@ -1,0 +1,28 @@
+boostenable=19
+
+turnon() {
+        echo $boostenable > /sys/class/gpio/export
+        echo out > /sys/class/gpio/gpio$boostenable/direction
+        echo 1 > /sys/class/gpio/gpio$boostenable/value
+        }
+
+turnoff() {
+        stty  -F /dev/ttyS1 115200
+        echo -ne "\xc0\x2f\x73\x68\x75\x74\x64\x6f\x77\x6e\x0\x0\x0\x2c\x0\x0\x0\xc0" > /dev/ttyS1
+        echo 0 > /sys/class/gpio/gpio$boostenable/value
+        }
+
+
+case "$1" in
+        start)
+                turnon
+                ;;
+        stop)
+                turnoff
+                ;;
+        *)
+                echo "Do not mess with this"
+                exit 1
+                ;;
+esac
+

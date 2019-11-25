@@ -1,0 +1,113 @@
+#N canvas 641 405 1176 549 10;
+#N canvas 1 89 450 300 (subpatch) 0;
+#X array array2 100 float 2;
+#X coords 0 1 99 -1 200 140 1 0 0;
+#X restore 680 26 graph;
+#X msg 83 418 memset 0 1 1 1 1 1;
+#X text 215 414 write a list (or a float) to the shared memory : 1st
+value is index \, other are data to store;
+#X msg 52 343 memset 0 array1;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array array1 100 float 3;
+#A 0 -0.457144 -0.485716 -0.514287 -0.52143 -0.528573 -0.538097 -0.54762
+-0.557144 -0.57143 -0.585716 -0.614287 -0.642858 -0.650001 -0.657144
+-0.67143 -0.685715 -0.700001 -0.714287 -0.728572 -0.757144 -0.757144
+-0.764287 -0.771429 -0.778572 -0.785715 -0.792858 -0.800001 -0.807144
+-0.814287 -0.819049 -0.82381 -0.828572 -0.833334 -0.838096 -0.842858
+-0.848572 -0.854286 -0.860001 -0.865715 -0.871429 -0.871429 -0.871429
+-0.871429 -0.871429 -0.871429 -0.877143 -0.882858 -0.888572 -0.894286
+-0.900001 -0.900001 -0.900001 -0.900001 -0.900001 -0.885715 -0.878572
+-0.871429 -0.864286 -0.857144 -0.857144 -0.857144 -0.857144 -0.857144
+-0.857144 -0.857144 -0.857144 -0.857144 -0.842858 -0.842858 -0.842858
+-0.842858 -0.842858 -0.842858 -0.828572 -0.814287 -0.814287 -0.814287
+-0.814287 -0.807144 -0.800001 -0.792858 -0.785715 -0.785715 -0.780953
+-0.776191 -0.771429 -0.764287 -0.757144 -0.742858 -0.742858 -0.742858
+-0.728572 -0.72143 -0.714287 -0.714287 -0.714287 -0.728572 -0.728572
+-0.728572 -0.771429;
+#X coords 0 1 99 -1 200 140 1;
+#X restore 475 26 graph;
+#X text 166 343 set shared memory from index 0 with array1;
+#X msg 68 365 memset 0 array1 50;
+#X text 196 365 set shared memory from index 0 with array1 from index
+50;
+#X text 162 505 1st argument : Identifiant of the memory segment;
+#X text 21 15 shmem - shared memory manipulation;
+#X text 22 37 The shmem object allow to use shared memory in Pd. It
+is useful for example to exchange array between two instances of Pd.
+Every shmem object can read and write to a shared memory segment that
+is identified by its Id.;
+#X text 21 95 When you create a shmem object \, it checks its Id. If
+the id is not used \, it allows a new segment \, otherwise it address
+the exisiting segment.;
+#X floatatom 614 418 5 0 0 0 - - -;
+#X text 685 443 read one float of the table send value to the outlet
+;
+#X msg 598 352 memdump 0 array2;
+#X text 567 274 READING MEMORY;
+#X floatatom 598 495 5 0 0 0 - - -;
+#X text 718 352 dump shared memory from index 0 to array2;
+#X text 162 521 2nd argument : size of the segment (number of float)
+;
+#X msg 614 443 memread \$1;
+#X msg 106 475 memclear;
+#X text 169 477 reset memory to 0;
+#X text 475 168 array1 and array 2 are size 100;
+#X msg 99 448 memset 50 5 5 5 1 1 0.1 0.2 0.3 0.4 0.5 0.6 0.7;
+#X text 21 272 WRITING INTO MEMORY;
+#X msg 608 374 memdump 0 array2 50;
+#X text 728 374 dump shared memory from index 0 to array2 from index
+50;
+#X text 768 394 dump shared memory from index 0 to array2 from index
+50 to index 60 (50 + 10);
+#X msg 46 321 memset array1 array1 array1;
+#X text 149 300 set array in to shared memory;
+#X text 223 321 set diferent array in to shared memory;
+#X msg 584 322 memdump array2 array2 array2;
+#X text 698 298 dump shared memory in an array;
+#X text 769 322 dump shared memory in many array;
+#X msg 78 391 memset 50 array1 0 25;
+#X text 219 388 set shared memory from index 50 with array1 from index
+0 to 25;
+#X msg 53 147 memset array_name [array_name];
+#X msg 71 187 memset src_offset list_of_float;
+#X msg 571 198 memdump array_name [array_name];
+#X msg 61 167 memset src_offset src_array_name [dest_offset [size]]
+;
+#X msg 583 221 memdump src_offset dest_array_name [dest_offset [size]]
+;
+#X msg 618 394 memdump 50 array2 0 10;
+#X obj 679 515 print status;
+#X text 763 512 send out the id of shared memory if allocation succeed
+\, -1 otherwise;
+#X text 18 213 CHANGE ID AND SIZE;
+#X msg 34 234 allocate 1234 1024;
+#X obj 16 255 t a a;
+#X msg 568 301 memdump array2;
+#X msg 37 300 memset array1;
+#X text 259 236 allocate <id> <size>;
+#X obj 35 505 shmem 12234 250;
+#X obj 598 471 shmem 12234 250;
+#X msg 159 259 allocate 4 12;
+#X msg 158 235 allocate 1 3000;
+#X connect 1 0 50 0;
+#X connect 3 0 50 0;
+#X connect 6 0 50 0;
+#X connect 12 0 19 0;
+#X connect 14 0 51 0;
+#X connect 19 0 51 0;
+#X connect 20 0 50 0;
+#X connect 23 0 50 0;
+#X connect 25 0 51 0;
+#X connect 28 0 50 0;
+#X connect 31 0 51 0;
+#X connect 34 0 50 0;
+#X connect 41 0 51 0;
+#X connect 45 0 46 0;
+#X connect 46 0 50 0;
+#X connect 46 1 51 0;
+#X connect 47 0 51 0;
+#X connect 48 0 50 0;
+#X connect 51 0 16 0;
+#X connect 51 1 42 0;
+#X connect 52 0 46 0;
+#X connect 53 0 46 0;

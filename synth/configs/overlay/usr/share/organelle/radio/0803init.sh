@@ -1,0 +1,553 @@
+#!/bin/sh
+#############################################################
+#
+# update oct 27
+# the kt0803l definitely NEEDS to have .1uF caps on inputs
+# once you get it set up you only need to change the freq
+# as the only one on the bus, a 4.7k pullup works
+# noticed sideband distortion off the main freq with rtl sdr
+# might be a problem if any RF amplification is added
+#
+#############################################################
+I2C_BUS=0
+I2C_ADDRESS=0X3E
+
+# Frequency range is 88.0Mhz to 108.0Mhz for US FM band
+# KT0803 and KT0803K chips have a max range of 70.0Mhz to 108.0Mhz
+# Frequency range can be restricted by setting FREQ_MIN and FREQ_MAX
+#FREQ=95000
+FREQ=89000
+FREQ_MIN=70000
+FREQ_MAX=108000
+
+# Bass boost, minimum=0, maximum=3, default=0
+# 0 = Disabled
+# 1 = 5dB
+# 2 = 11dB
+# 3 = 17dB
+BASE_BOOST=0
+
+# RFGain, minimum=0, maximum=15, default=15
+# 0    95.5 dBuV
+# 1    96.5 dBuV
+# 2    97.5 dBuV
+# 3    98.2 dBuV
+# 4    98.9 dBuV
+# 5    100 dBuV
+# 6    101.5 dBuV
+# 7    102.8 dBuV
+# 8    105.1 dBuV
+# 9    105.6 dBuV
+# 10    106.2 dBuV
+# 11    106.5 dBuV
+# 12    107 dBuV
+# 13    107.4 dBuV
+# 14    107.7 dBuV
+# 15     108 dBuV
+RFGAIN=9
+
+# Mute audio, Mute=1, Unmute=0, default=0
+MUTE=0
+
+# Mono audio, Mono=1, Stereo=0, default=0
+MONO=1
+
+# PGA Mode (Programmable Amplifier), 1dB-increment=1, 4db-increment=0, default=0
+PGAMOD=0
+
+# PGAMP, Sets amount of audio amplification (volume)
+# If PGAMOD=0 range 0 to 3, default = 0
+# If PGAMOD=1 range 0 to 15, default = 0
+PGAMP=0
+PGAMP_SIGN=0
+
+# Frequency Deviation set the maximum frequency shift for maximum input
+# Range 0 to 3, default = 1
+# 0 - 00 : 75kHz
+# 1 - 01 : 112.5kHz
+# 2 - 10 : 150kHz
+# 3 - 11 : 187.5kHz
+FDEV=1
+
+# Pilot Tone Adjustment, high = 1, low = 0, default = 0
+PLTADJ=0
+
+# Pre-emphasis Time-Constant Set, high = 1, low = 0, default = 0
+# 1: 50 μs (Europe, Australia)
+# 0: 75 μs (USA, Japan)
+PHTCNST=0
+
+# Power Amplifier Power Down, disable audio amplifier = 1, enable audio amplifier = 0, default = 0
+PDPA=0
+
+# Switching channel mode, disable audio amplifier = 1, enable audio amplifier = 0, default = 0
+# 0 = mute when changing channel 
+# 1 = pa off when changing channel 
+SW_MOD=0
+
+# Internal audio limiter level control, minimum=0, maximum=3, default=1
+# 0 - 00 = 0.6875
+# 1 - 01 = 0.75
+# 2 - 10 = 0.875
+# 3 - 11 = 0.9625
+LMTLVL=1
+
+####################################################################################################
+# End variable section
+####################################################################################################
+
+# Frequency range is 88.0Mhz to 108.0Mhz for US FM band
+# Split between three registers
+# Bits 11 to 9 are in register 0x01 bit positions 2 to 0 respectively
+# Bits 8 to 1 are in register 0x00
+# Bit 0 is is in register 0x02 bit position 7
+# Set in 100Khz increments
+if [ "$FREQ" -gt $(($FREQ_MIN-1)) -a "$FREQ" -lt $(($FREQ_MAX+1)) ]
+    then
+# Divide desired frequency by 50
+   FREQ_WORD=$(($FREQ/50))
+# Split off bits 11 to 9 and store
+   FREQ_REG_01=`printf "%x\n" $(echo "$FREQ_WORD/512" | bc)`
+# Store bits 8 to 0
+   FREQ_REG_00=$((FREQ_WORD-($FREQ_REG_01*512)))
+# Strip off bit 1 to 7 and store
+   FREQ_REG_02=$(($FREQ_REG_00 & 0x01))
+# Shift bit to bit position 7
+   FREQ_REG_02=$(($FREQ_REG_02 << 7))
+# Convert registers to 2 characters
+   FREQ_REG_00=`printf "%02x\n" $(echo "$FREQ_REG_00/2" | bc)`
+   FREQ_REG_01=`printf "%02x\n" $FREQ_REG_01`
+   FREQ_REG_02=`printf "%x\n" $FREQ_REG_02`
+# Read registers' current values
+# Register 0x02
+   READ_REG_01=`i2cget -y $I2C_BUS $I2C_ADDRESS 0x01`
+# Register 0x00 
+#    No need to read register 0x00, all 8 bits to be written
+   READ_REG_00=`i2cget -y $I2C_BUS $I2C_ADDRESS 0x00`
+# Register 0x02
+   READ_REG_02=`i2cget -y $I2C_BUS $I2C_ADDRESS 0x02`
+# Clear bits to be changed,
+# store new value 
+# and format to two characters to prevent dropping leading zeros
+# Register 0x01
+   WRITE_REG_01=$((0xf8 & $READ_REG_01))
+   WRITE_REG_01=$(($WRITE_REG_01 | $FREQ_REG_01))
+   WRITE_REG_01=`printf "%02x\n" $WRITE_REG_01`
+# Register 0x00
+   WRITE_REG_00=$FREQ_REG_00
+# Register 0x02
+   WRITE_REG_02=$((0x7f & $READ_REG_02))
+   WRITE_REG_02=$(($WRITE_REG_02 | $FREQ_REG_02))
+   i2cset -y $I2C_BUS $I2C_ADDRESS 0x01 0x$WRITE_REG_01
+   i2cset -y $I2C_BUS $I2C_ADDRESS 0x00 0x$WRITE_REG_00
+   i2cset -y $I2C_BUS $I2C_ADDRESS 0x02 0x$WRITE_REG_02
+    else
+# Invalid or no value set
+        echo Frequency value not set or invalid - skipping
+fi
+
+
+# Base Boost is 2 bits in register 4 at bit positions 0 and 1
+# Bit 0 is LSB
+if [ "$BASE_BOOST" -gt -1 -a "$BASE_BOOST" -lt 4 ]
+    then
+# Read register 4's current value
+   READ_REG_04=`i2cget -y $I2C_BUS $I2C_ADDRESS 0x04`
+# Clear bits to be changed,
+# store new value 
+# and format to two characters to prevent dropping leading zeros
+# Register 0x04
+        WRITE_REG_04=$((0xfc & $READ_REG_04))
+   WRITE_REG_04=$(($WRITE_REG_04 | $BASE_BOOST))
+        WRITE_REG_04=`printf "%02x\n" $WRITE_REG_04`
+# Write new values to registers
+        i2cset -y $I2C_BUS $I2C_ADDRESS 0x04 0x$WRITE_REG_04
+    else
+# Invalid or no value set
+   echo Base Boost value not set or invalid - skipping
+fi
+
+
+# RFGain is 4 bit split between 3 registers
+# Bit 3 is in register 0x02 bit position 6
+# Bit 2 is in register 0x13 bit position 7
+# Bits 1 and 0 are in register 0x01 bit positions 7 and 6 respectively
+
+if [ "$RFGAIN" -gt -1 -a "$RFGAIN" -lt 16 ]
+    then
+# Split desired RFGain into three register values
+# and shift bits to match register's bit position
+# Regiseter 0x02
+   RFGAIN_REG_02=$(($RFGAIN & 8))
+   RFGAIN_REG_02=$(($RFGAIN_REG_02 << 3))
+# Regiseter 0x13
+   RFGAIN_REG_13=$(($RFGAIN & 4))
+   RFGAIN_REG_13=$(($RFGAIN_REG_13 << 5))
+# Regiseter 0x01
+   RFGAIN_REG_01=$(($RFGAIN & 3))
+   RFGAIN_REG_01=$(($RFGAIN_REG_01 << 6))
+
+# Read registers' current values
+# Register 0x02
+   READ_REG_02=`i2cget -y $I2C_BUS $I2C_ADDRESS 0x02`
+# Register 0x13
+   READ_REG_13=`i2cget -y $I2C_BUS $I2C_ADDRESS 0x13`
+# Register 0x01
+   READ_REG_01=`i2cget -y $I2C_BUS $I2C_ADDRESS 0x01`
+
+# Clear bits to be changed,
+# store new value 
+# and format to two characters to prevent dropping leading zeros
+# Register 0x02
+   WRITE_REG_02=$((0xbf & $READ_REG_02))
+   WRITE_REG_02=$(($WRITE_REG_02 | $RFGAIN_REG_02))
+   WRITE_REG_02=`printf "%02x\n" $WRITE_REG_02`
+# Register 0x13
+   WRITE_REG_13=$((0x7f & $READ_REG_13))
+   WRITE_REG_13=$(($WRITE_REG_13 | $RFGAIN_REG_13))
+   WRITE_REG_13=`printf "%02x\n" $WRITE_REG_13`
+# Register 0x01
+   WRITE_REG_01=$((0x3f & $READ_REG_01))
+   WRITE_REG_01=$(($WRITE_REG_01 | $RFGAIN_REG_01))
+   WRITE_REG_01=`printf "%02x\n" $WRITE_REG_01`
+
+# Write new RFGain values to registers
+   i2cset -y $I2C_BUS $I2C_ADDRESS 0x02 0x$WRITE_REG_02
+   i2cset -y $I2C_BUS $I2C_ADDRESS 0x13 0x$WRITE_REG_13
+   i2cset -y $I2C_BUS $I2C_ADDRESS 0x01 0x$WRITE_REG_01
+    else
+# Invalid or no value set
+   echo RFGain value not set or invalid - skipping
+fi
+
+
+# Mute is 1 bit in register 0x02 at bit position 3
+if [ "$MUTE" -gt -1 -a "$MUTE" -lt 2 ]
+    then
+# Shift Mute bit to bit position 3
+   MUTE_REG=$(($MUTE << 3))
+# Read register 0x02's current value
+        READ_REG_02=`i2cget -y $I2C_BUS $I2C_ADDRESS 0x02`
+# Clear bits to be changed,
+# store new value 
+# and format to two characters to prevent dropping leading zeros
+# Register 0x02
+        WRITE_REG_02=$((0xf7 & $READ_REG_02))
+   WRITE_REG_02=$(($WRITE_REG_02 | $MUTE_REG))
+        WRITE_REG_02=`printf "%02x\n" $WRITE_REG_02`
+# Write new values to registers
+        i2cset -y $I2C_BUS $I2C_ADDRESS 0x02 0x$WRITE_REG_02
+    else
+# Invalid or no value set
+        echo Mute value not set or invalid - skipping
+fi
+
+
+# Mono is 1 bit in register 0x04 at bit position 6
+if [ "$MONO" -gt -1 -a "$MONO" -lt 2 ]
+    then
+# Shift Mute bit to bit position 6
+   MONO_REG=$(($MONO << 6))
+# Read register 0x04's current value
+        READ_REG_04=`i2cget -y $I2C_BUS $I2C_ADDRESS 0x04`
+# Clear bits to be changed,
+# store new value 
+# and format to two characters to prevent dropping leading zeros
+# Register 0x04
+        WRITE_REG_04=$((0xbf & $READ_REG_04))
+   WRITE_REG_04=$(($WRITE_REG_04 | $MONO_REG))
+        WRITE_REG_04=`printf "%02x\n" $WRITE_REG_04`
+# Write new values to registers
+        i2cset -y $I2C_BUS $I2C_ADDRESS 0x04 0x$WRITE_REG_04
+    else
+# Invalid or no value set
+        echo Mono value not set or invalid - skipping
+fi
+
+# PGA Mode is 1 bit in register 0x10 at bit position 0
+if [ "$PGAMOD" -gt -1 -a "$PGAMOD" -lt 2 ]
+    then
+# Read register 0x10's current value
+        READ_REG_10=`i2cget -y $I2C_BUS $I2C_ADDRESS 0x10`
+# Clear bits to be changed,
+# store new value 
+# and format to two characters to prevent dropping leading zeros
+# Register 0x10
+        WRITE_REG_10=$((0xfe & $READ_REG_10))
+   WRITE_REG_10=$(($WRITE_REG_10 | $PGAMOD))
+        WRITE_REG_10=`printf "%02x\n" $WRITE_REG_10`
+# Write new values to registers
+        i2cset -y $I2C_BUS $I2C_ADDRESS 0x10 0x$WRITE_REG_10
+    else
+# Invalid or no value set
+        echo PGA Mode value not set or invalid - skipping
+fi
+
+
+# PGAMP is 7 bits split between two registers
+# Register 0x01 bits 3 to 5 hold PGA MSB's
+# Register 0x04 bits 4 and 5 hold PGA LSB's
+# Register 0x04 is not used if PGAMOD is set to 0
+# PGAMOD=0 Range minimum = 0 maximum = 3
+# PGAMOD=1 Range minimum = 0 maximum = 15
+# PGAMP_SIGN, Determines whether the audio is increased or decreased
+# 0 = decrease 1 = increase
+# Used for both 1dB and 4dB modes
+# PGAMOD=0 (4dB increments)
+# PGA value   amplification
+# 0x07 (111):   12dB
+# 0x06 (110):   8dB
+# 0x05 (101):   4dB
+# 0x04 (100):   0dB
+# 0x00 (000):   0dB
+# 0x01 (001):   -4dB
+# 0x02 (010):   -8dB
+# 0x03 (011):   -12dB
+# Negative values decrease volume
+# PGA LSB, Sets amount of audio amplification
+# Used for 1dB mode
+# PGA and PGA LSB combine to form one register
+# PGAMOD=1 (1dB increments)
+# PGA   PGA_LSB   PGA Gain
+# 111   11   12dB
+# 111   10   11
+# 111   01   10
+# 111   00   9
+# 110   11   8
+# 110   10   7
+# 110   01   6
+# 110   00   5
+# 101   11   4
+# 101   10   3
+# 101   01   2
+# 101   00   1
+# 100   11   0
+# 100   10   0
+# 100   01   0
+# 100   00   0
+# 000   00   0
+# 000   01   -1
+# 000   10   -2
+# 000   11   -3
+# 001   00   -4
+# 001   01   -5
+# 001   10   -6
+# 001   11   -7
+# 010   00   -8
+# 010   01   -9
+# 010   10   -10
+# 010   11   -11
+# 011   00   -12
+# 011   01   -13
+# 011   10   -14
+# 011   11   -15 
+
+# check to see if in 1dB (PGAMODE=1) or 4dB mode (PGAMODE=0)
+if [ "$PGAMOD" -eq 0 ]
+    then
+# 4dB Mode
+# Check if PGAMP is a valid range 0 to 3
+   if [ "$PGAMP" -gt -1 -a "$PGAMP" -lt 4  ];then
+# Shift PGAMP bits to align with bit in register 0x01
+      PGAMP_REG_01=$(($PGAMP << 3))
+# Add sign bit if set
+       if [ "$PGAMP_SIGN" -eq 1 ]; then
+      PGAMP_REG_01=$(($PGAMP_REG_01 | 0x20))
+       fi
+# Read register 0x01's current values
+       READ_REG_01=`i2cget -y $I2C_BUS $I2C_ADDRESS 0x01`
+# Clear bits to be changed,
+# store new value 
+# and format to two characters to prevent dropping leading zeros
+# Register 0x01
+       WRITE_REG_01=$((0xcf & $READ_REG_01))
+       WRITE_REG_01=$(($WRITE_REG_01 | $PGAMP_REG_01))
+       WRITE_REG_01=`printf "%02x\n" $WRITE_REG_01`
+# Write new PGAMP values to register
+       i2cset -y $I2C_BUS $I2C_ADDRESS 0x01 0x$WRITE_REG_01
+   else
+# Invalid range
+        echo PGAMP value not set or invalid for 4dB mode PGAMOD=0 - skipping
+   fi
+    elif [ "$PGAMOD" -eq 1 ];then
+# 1dB Mode
+# PGAMP is split between registers 0x01 and 0x04
+# Sign bit is register 0x01 bit position 5
+# PGAMP bits 3 and 2 are register 0x01 bit positions 4 and 3 respectively
+# PGAMP bits 1 and 0 are register 0x04 bit positions 5 and 4 respectively
+# Check if PGAMP is a valid range 0 to 15
+   if [ "$PGAMP" -gt -1 -a "$PGAMP" -lt 16  ];then
+# Split desired RFGain into three register values
+# and shift bits to match register's bit position
+# Register 0x01
+       PGAMP_REG_01=$(($PGAMP & 0x0c))
+       PGAMP_REG_01=$(($PGAMP_REG_01 << 1))
+# Register 0x04
+       PGAMP_REG_04=$(($PGAMP & 0x03))
+       PGAMP_REG_04=$(($PGAMP_REG_04 << 4))
+# Read registers' current values
+# Register 0x01
+       READ_REG_01=`i2cget -y $I2C_BUS $I2C_ADDRESS 0x01`
+
+
+# Register 0x04
+       READ_REG_04=`i2cget -y $I2C_BUS $I2C_ADDRESS 0x04`
+# Clear bits to be changed,
+# store new value 
+# and format to two characters to prevent dropping leading zeros
+# Register 0x01
+       WRITE_REG_01=$((0xc7 & $READ_REG_01))
+       WRITE_REG_01=$(($WRITE_REG_01 | $PGAMP_REG_01))
+# Add sign bit if set
+       if [ "$PGAMP_SIGN" -eq 1 ]; then
+      WRITE_REG_01=$(($WRITE_REG_01 | 0x20))
+       fi
+       WRITE_REG_01=`printf "%02x\n" $WRITE_REG_01`
+# Register 0x04
+       WRITE_REG_04=$((0xe7 & $READ_REG_04))
+       WRITE_REG_04=$(($WRITE_REG_04 | $PGAMP_REG_04))
+       WRITE_REG_04=`printf "%02x\n" $WRITE_REG_04`
+# Write new PGAMP values to registers
+       i2cset -y $I2C_BUS $I2C_ADDRESS 0x01 0x$WRITE_REG_01
+       i2cset -y $I2C_BUS $I2C_ADDRESS 0x04 0x$WRITE_REG_04
+   else
+            echo PGAMP value not set or invalid for 1dB mode PGAMOD=1 - skipping
+   fi
+    else
+# Invalid or no value set
+        echo PGAMP Sign value not set or invalid - skipping
+fi
+
+
+# Frequency Deviation is 2 bits in register 0x04 at bit positions 3 and 2
+# Bit 2 is LSB
+# Frequency deviation adjustment
+# 00 : 75kHz
+# 01 : 112.5kHz
+# 10 : 150kHz
+# 11 : 187.5kHz
+if [ "$FDEV" -gt -1 -a "$FDEV" -lt 4 ]
+    then
+# Shift bits to match register's bit position
+# Register 0x04
+   FDEV_REG_04=$(($FDEV << 2))
+# Read register 4's current value
+   READ_REG_04=`i2cget -y $I2C_BUS $I2C_ADDRESS 0x04`
+# Clear bits to be changed,
+# store new value 
+# and format to two characters to prevent dropping leading zeros
+# Register 0x04
+   WRITE_REG_04=$((0xf3 & $READ_REG_04))
+   WRITE_REG_04=$(($WRITE_REG_04 | $FDEV_REG_04))
+   WRITE_REG_04=`printf "%02x\n" $WRITE_REG_04`
+# Write new values to registers
+        i2cset -y $I2C_BUS $I2C_ADDRESS 0x04 0x$WRITE_REG_04
+    else
+# Invalid or no value set
+    echo Frequency Deviation value not set or invalid - skipping
+fi
+
+
+# Pilot Tone Adjust is 1 bit in register 0x02 at bit position 2
+if [ "$PLTADJ" -gt -1 -a "$PLTADJ" -lt 2 ]
+    then
+# Shift Mute bit to bit position 2
+   PLTADJ_REG=$(($PLTADJ << 2))
+# Read register 0x02's current value
+        READ_REG_02=`i2cget -y $I2C_BUS $I2C_ADDRESS 0x02`
+# Clear bits to be changed,
+# store new value 
+# and format to two characters to prevent dropping leading zeros
+# Register 0x02
+   WRITE_REG_02=$((0xf7 & $READ_REG_02))
+   WRITE_REG_02=$(($WRITE_REG_02 | $PLTADJ_REG))
+   WRITE_REG_02=`printf "%02x\n" $WRITE_REG_02`
+# Write new values to registers
+        i2cset -y $I2C_BUS $I2C_ADDRESS 0x02 0x$WRITE_REG_02
+    else
+# Invalid or no value set
+        echo Pilot Tone Adjust value not set or invalid - skipping
+fi
+
+
+# Pre-emphasis Time-Constant Set is 1 bit in register 0x02 at bit position 0
+if [ "$PHTCNST" -gt -1 -a "$PHTCNST" -lt 2 ]
+    then
+# Read register 0x02's current value
+        READ_REG_02=`i2cget -y $I2C_BUS $I2C_ADDRESS 0x02`
+# Clear bits to be changed,
+# store new value 
+# and format to two characters to prevent dropping leading zeros
+# Register 0x02
+        WRITE_REG_02=$((0xfe & $READ_REG_02))
+   WRITE_REG_02=$(($WRITE_REG_02 | $PHTCNST))
+        WRITE_REG_02=`printf "%02x\n" $WRITE_REG_02`
+# Write new values to registers
+        i2cset -y $I2C_BUS $I2C_ADDRESS 0x02 0x$WRITE_REG_02
+    else
+# Invalid or no value set
+        echo Pre-emphasis Time-Constant Set value not set or invalid - skipping
+fi
+
+
+# Power Amplifier Power Down is 1 bit in register 0x0b at bit position 5
+# It is the only bit used in this register
+if [ "$PDPA" -gt -1 -a "$PDPA" -lt 2 ]
+    then
+# Shift Mute bit to bit position 3
+   PDPA_REG=$(($PDPA << 5))
+# Write new values to registers
+   i2cset -y $I2C_BUS $I2C_ADDRESS 0x0b 0x$PDPA_REG
+    else
+# Invalid or no value set
+        echo Power Amplifier Power Down value not set or invalid - skipping
+fi
+
+
+# Switching channel mode is 1 bit in register 0x12 at bit position 0
+if [ "$SW_MOD" -gt -1 -a "$SW_MOD" -lt 2 ]
+    then
+# Read register 0x12's current value
+        READ_REG_12=`i2cget -y $I2C_BUS $I2C_ADDRESS 0x12`
+# Clear bits to be changed,
+# store new value 
+# and format to two characters to prevent dropping leading zeros
+# Register 0x12
+   WRITE_REG_12=$((0xfe & $READ_REG_12))
+   WRITE_REG_12=$(($WRITE_REG_12 | $SW_MOD))
+   WRITE_REG_12=`printf "%02x\n" $WRITE_REG_12`
+# Write new values to registers
+   i2cset -y $I2C_BUS $I2C_ADDRESS 0x12 0x$WRITE_REG_12
+    else
+# Invalid or no value set
+        echo Switching channel mode value not set or invalid - skipping
+fi
+
+
+# Internal audio limiter level control is 2 bits in register 0x10 at bit positions 4 and 3
+# Bit 3 is LSB
+if [ "$LMTLVL" -gt -1 -a "$LMTLVL" -lt 4 ]
+    then
+# Shift bits to match register's bit position
+# Register 0x10
+   LMTLVL_REG_10=$(($LMTLVL << 3))
+# Read register 0x10's current value
+   READ_REG_10=`i2cget -y $I2C_BUS $I2C_ADDRESS 0x10`
+# Clear bits to be changed,
+# store new value 
+# and format to two characters to prevent dropping leading zeros
+# Register 0x10
+   WRITE_REG_10=$((0xe7 & $READ_REG_10))
+   WRITE_REG_10=$(($WRITE_REG_10 | $LMTLVL_REG_10))
+   WRITE_REG_10=`printf "%02x\n" $WRITE_REG_10`
+# Write new values to registers
+   i2cset -y $I2C_BUS $I2C_ADDRESS 0x10 0x$WRITE_REG_10
+    else
+# Invalid or no value set
+    echo Internal audio limiter level control value not set or invalid - skipping
+fi
+
+
+
+exit 0
+

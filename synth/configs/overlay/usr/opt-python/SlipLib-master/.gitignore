@@ -1,0 +1,16 @@
+*.egg-info
+*.pyc
+.cache
+.externalToolBuilders
+.idea
+.project
+.pydevproject
+.settings
+.tox
+__pycache__
+dist
+docs/_build
+Include
+Lib
+pyvenv.cfg
+Scripts

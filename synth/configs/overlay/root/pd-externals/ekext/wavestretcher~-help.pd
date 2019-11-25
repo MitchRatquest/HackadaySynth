@@ -1,0 +1,250 @@
+#N canvas 0 22 827 766 10;
+#X obj 140 151 phasor~;
+#X floatatom 141 131 0 0 0 0 - - -;
+#X obj 141 111 mtof;
+#X floatatom 141 92 5 0 0 0 - - -;
+#X obj 131 49 loadbang;
+#X obj 19 350 *~;
+#X obj 27 379 dac~;
+#X msg 66 123 bipolar \$1;
+#X obj 67 103 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+1;
+#X msg 67 83 1;
+#X msg 142 71 48;
+#X obj 140 302 wavefolder~;
+#X obj 68 348 *~;
+#X obj 33 327 dbtorms;
+#X obj 33 219 vsl 22 101 0 100 0 0 empty empty TriSaw 0 -9 0 10 -262144
+-1 -1 0 1;
+#X obj 83 327 dbtorms;
+#X obj 83 220 vsl 22 101 0 100 0 0 empty empty PWM 0 -9 0 10 -262144
+-1 -1 0 1;
+#X obj 171 201 * 0.01;
+#X floatatom 171 182 5 -100 100 1 TriSaw - -;
+#X floatatom 171 222 5 0 0 1 shape - -;
+#X obj 251 201 * 0.01;
+#X floatatom 251 182 5 -100 100 1 PWM - -;
+#X floatatom 251 222 5 0 0 1 threshold - -;
+#N canvas 0 22 450 300 miniscope~ 0;
+#X obj 19 163 inlet~;
+#N canvas 0 22 450 300 (subpatch) 0;
+#X array trisaw 1024 float 0;
+#X coords 0 1 1023 -1 202 61 1;
+#X restore 202 128 graph;
+#X obj 39 210 bang~;
+#X obj 19 247 tabwrite~ trisaw;
+#X obj 202 79 switch~ 1024 1 1;
+#X obj 202 59 inlet;
+#N canvas 0 22 450 300 (subpatch) 0;
+#X array PWM 1024 float 0;
+#X coords 0 1 1023 -1 202 61 1;
+#X restore 406 128 graph;
+#X obj 129 163 inlet~;
+#X obj 149 210 bang~;
+#X obj 129 247 tabwrite~ PWM;
+#X connect 0 0 3 0;
+#X connect 2 0 3 0;
+#X connect 5 0 4 0;
+#X connect 7 0 9 0;
+#X connect 8 0 9 0;
+#X coords 0 -1 1 1 410 81 2 200 110;
+#X restore 146 332 pd miniscope~;
+#X msg 562 332 1;
+#X obj 567 307 loadbang;
+#X text 325 144 it also generates continuously variable duty cycle
+pulse waveforms from the trisaw wave.;
+#X obj 171 248 pack f 20;
+#X obj 251 248 pack f 20;
+#X obj 171 270 line~;
+#X obj 251 270 line~;
+#X text 572 670 (c) 2012 Edward Kelly;
+#X msg 36 84 90;
+#X text 325 117 wavefolder~ derives continuously variable sawtooth
+- to triangle shaped waveforms from phasor~ input.;
+#X text 320 263 inlets: signal(phasor~ output) \, trisaw shape \, pulse
+threshold;
+#X text 321 292 outlets: trisaw wave \, pulse wave;
+#N canvas 733 427 450 300 trisaw_spectrum~ 0;
+#N canvas 0 22 450 300 (subpatch) 0;
+#X array trisaw_spectrum 128 float 1;
+#A 0 5.38321 6.97336 14.1962 250 14.0626 5.03434 108.715 13.6189 7.70171
+9.41472 7.54713 6.8387 21.6022 3.18724 3.15882 17.4265 5.73017 3.20362
+3.32219 5.3006 4.50546 7.0955 2.17318 3.38958 8.44156 0.792723 1.26363
+4.10529 1.60732 1.05788 1.32542 1.10848 1.33254 3.02606 1.94425 1.14716
+2.15452 1.99633 1.06405 0.888473 0.81896 0.690944 0.949118 1.69826
+0.764896 0.274589 2.43205 1.3112 0.895508 1.69803 1.32113 1.46418 0.528152
+0.890886 1.20204 1.1046 0.681367 0.721656 1.09246 0.782844 0.805687
+0.627625 0.731379 0.865069 0.666971 0.556645 0.677337 0.358235 0.437775
+0.473127 0.529129 0.485556 0.444158 1.18916 0.562051 0.512339 1.15463
+0.550484 0.52645 0.592483 0.506898 0.498576 0.675664 0.488157 0.48744
+0.913619 0.45312 0.458002 0.654326 0.405065 0.394567 0.204564 0.424796
+0.37271 0.061329 0.505184 0.431483 0.227288 0.52091 0.480246 0.515532
+0.430949 0.445539 0.608766 0.386923 0.387663 0.428678 0.450733 0.417704
+0.405431 0.432786 0.448952 0.59274 0.297168 0.386018 0.562516 0.167838
+0.279918 0.345329 0.223301 0.252727 0.215069 0.376682 0.306897 0.274706
+0.448555 0.344434 0.320206;
+#X coords 0 250 127 0 192 81 1;
+#X restore 106 118 graph;
+#N canvas 0 22 450 300 fft_analysis 0;
+#X obj 92 36 inlet~;
+#X obj 92 73 rfft~;
+#X obj 91 109 cartopol~;
+#X obj 189 120 bang~;
+#X obj 231 97 block~ 1024 4 1;
+#X obj 93 175 clip~ 0 250;
+#X obj 93 211 tabwrite~ trisaw_spectrum;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 1 1 2 1;
+#X connect 2 0 5 0;
+#X connect 3 0 6 0;
+#X connect 5 0 6 0;
+#X restore 166 53 pd fft_analysis;
+#X obj 166 17 inlet~;
+#X text 104 198 0--------------Hz-----------5012;
+#X connect 2 0 1 0;
+#X coords 0 -1 1 1 204 114 2 100 100;
+#X restore 593 329 pd trisaw_spectrum~;
+#X obj 136 584 wavestretcher~;
+#X obj 173 485 * 0.01;
+#X floatatom 173 466 5 -100 100 1 - - -;
+#X floatatom 173 506 5 0 0 1 breakpoint - -;
+#X obj 272 485 * 0.01;
+#X floatatom 272 466 5 -100 100 1 PWM - -;
+#X floatatom 272 506 5 0 0 1 squash_stretch - -;
+#X obj 173 532 pack f 20;
+#X obj 272 532 pack f 20;
+#X obj 173 554 line~;
+#X obj 272 554 line~;
+#N canvas 0 22 450 300 miniscope~ 0;
+#X obj 19 163 inlet~;
+#N canvas 0 22 450 300 (subpatch) 0;
+#X array wavestretch 1024 float 0;
+#X coords 0 1 1023 -1 202 61 1;
+#X restore 202 128 graph;
+#X obj 39 210 bang~;
+#X obj 202 79 switch~ 1024 1 1;
+#X obj 202 59 inlet;
+#X obj 19 247 tabwrite~ wavestretch;
+#X connect 0 0 5 0;
+#X connect 2 0 5 0;
+#X connect 4 0 3 0;
+#X coords 0 -1 1 1 206 81 2 200 110;
+#X restore 137 632 pd miniscope~;
+#X msg 343 567 1;
+#X obj 348 542 loadbang;
+#N canvas 733 427 450 300 trisaw_spectrum~ 0;
+#N canvas 0 22 450 300 (subpatch) 0;
+#X array stretch_spectrum 128 float 1;
+#A 0 0.00571558 0.686701 2.05097 60.7031 1.43935 1.76565 60.1779 7.43067
+4.8288 1.19228 7.05932 9.83605 54.6882 4.31745 4.38665 53.4548 15.984
+8.09525 2.44625 12.6435 14.0913 43.5627 5.84187 5.91155 42.4467 21.1754
+8.53146 3.66584 16.1594 14.3681 30.0495 5.29885 6.27173 29.8775 21.6943
+6.58134 4.56668 17.0916 11.5742 17.2009 2.65662 5.7002 18.3265 17.8111
+3.47099 4.8096 15.7231 7.39985 7.36974 1.33634 4.537 9.48436 11.1672
+0.627678 4.21594 12.8583 3.52622 1.55259 5.40827 3.10009 3.87586 4.0301
+0.944605 2.91922 9.4247 0.998425 0.657701 8.27655 1.65525 1.05899 1.6144
+1.0255 1.3434 6.15688 0.00986579 0.573171 9.16716 0.435809 0.0994575
+4.71618 0.121978 0.0106111 3.46879 0.101882 0.324306 8.08989 0.360301
+0.0528757 5.32712 0.929581 0.714933 1.497 0.588666 0.99086 5.745 0.622706
+0.260005 4.28449 1.45316 0.777783 0.216427 0.944158 1.06009 3.13471
+0.397949 0.407463 2.6625 1.24968 0.419286 0.469461 0.98123 0.702979
+1.09822 0.103118 0.429229 1.28331 0.598323 0.00943528 0.686852 0.800105
+0.286527 0.0108431 0.56668 0.36759 0.490452 0.0228735 0.227259 0.595975
+;
+#X coords 0 250 127 0 192 81 1;
+#X restore 106 118 graph;
+#N canvas 0 22 450 300 fft_analysis 0;
+#X obj 92 36 inlet~;
+#X obj 92 73 rfft~;
+#X obj 91 109 cartopol~;
+#X obj 189 120 bang~;
+#X obj 231 97 block~ 1024 4 1;
+#X obj 93 175 clip~ 0 250;
+#X obj 93 211 tabwrite~ stretch_spectrum;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 1 1 2 1;
+#X connect 2 0 5 0;
+#X connect 3 0 6 0;
+#X connect 5 0 6 0;
+#X restore 166 53 pd fft_analysis;
+#X obj 166 17 inlet~;
+#X text 104 198 0--------------Hz-----------5012;
+#X connect 2 0 1 0;
+#X coords 0 -1 1 1 204 114 2 100 100;
+#X restore 359 606 pd trisaw_spectrum~;
+#X text 407 456 wavestretcher~ derives a waveform from a triangle/sawtooth
+wave input that morphs between different shapes.;
+#X text 409 483 with the breakpoint at -1 \, the stretch factor morphs
+between a square and a sawtooth wave \, and with the breakpoint at
+e.g. 0.99 \, the stretch factor morphs between a sawtooth and alternate
+pulse-train style waveforms.;
+#X text 420 535 various flavours of pulse/saw/trapezoid waveforms may
+be seamlessly morphed between.;
+#X obj 55 628 *~;
+#X obj 70 607 dbtorms;
+#X obj 70 500 vsl 22 101 0 100 0 0 empty empty stretched 0 -9 0 10
+-262144 -1 -1 9600 1;
+#X obj 49 663 dac~;
+#X text 212 26 wavefolder~ and wavestretcher~ extend the spectral modulations
+typically found in Pulse-Width Modulation \, providing a variety of
+waveshape modulations not found in traditional subtractive synthesis
+methods.;
+#X connect 0 0 11 0;
+#X connect 1 0 0 0;
+#X connect 2 0 1 0;
+#X connect 3 0 2 0;
+#X connect 4 0 10 0;
+#X connect 4 0 9 0;
+#X connect 4 0 32 0;
+#X connect 5 0 6 0;
+#X connect 5 0 6 1;
+#X connect 7 0 11 0;
+#X connect 8 0 7 0;
+#X connect 9 0 8 0;
+#X connect 10 0 3 0;
+#X connect 11 0 5 0;
+#X connect 11 0 23 0;
+#X connect 11 0 36 0;
+#X connect 11 0 37 0;
+#X connect 11 1 12 0;
+#X connect 11 1 23 1;
+#X connect 12 0 6 0;
+#X connect 12 0 6 1;
+#X connect 13 0 5 1;
+#X connect 14 0 13 0;
+#X connect 15 0 12 1;
+#X connect 16 0 15 0;
+#X connect 17 0 19 0;
+#X connect 18 0 17 0;
+#X connect 19 0 27 0;
+#X connect 20 0 22 0;
+#X connect 21 0 20 0;
+#X connect 22 0 28 0;
+#X connect 24 0 23 2;
+#X connect 25 0 24 0;
+#X connect 27 0 29 0;
+#X connect 28 0 30 0;
+#X connect 29 0 11 1;
+#X connect 30 0 11 2;
+#X connect 32 0 14 0;
+#X connect 37 0 48 0;
+#X connect 37 0 51 0;
+#X connect 37 0 55 0;
+#X connect 38 0 40 0;
+#X connect 39 0 38 0;
+#X connect 40 0 44 0;
+#X connect 41 0 43 0;
+#X connect 42 0 41 0;
+#X connect 43 0 45 0;
+#X connect 44 0 46 0;
+#X connect 45 0 47 0;
+#X connect 46 0 37 1;
+#X connect 47 0 37 2;
+#X connect 49 0 48 1;
+#X connect 50 0 49 0;
+#X connect 55 0 58 0;
+#X connect 55 0 58 1;
+#X connect 56 0 55 1;
+#X connect 57 0 56 0;

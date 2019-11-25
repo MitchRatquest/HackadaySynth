@@ -1,0 +1,37 @@
+#N canvas 210 97 630 649 10;
+#X declare -path ..;
+#N canvas 0 22 450 300 (subpatch) 0;
+#X array data 100 float 2;
+#X coords 0 1 99 -1 200 140 1;
+#X restore 28 269 graph;
+#X text 30 23 Basic sharing of memory data between two pd instances
+;
+#X msg 48 174 pd~ stop;
+#X obj 512 20 loadbang;
+#X msg 512 41 \; pd dsp 1;
+#X text 44 116 launch subprocess;
+#X obj 39 52 declare -path ..;
+#X obj 373 155 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+1;
+#X obj 373 174 metro 50;
+#X obj 373 134 loadbang;
+#N canvas 0 22 450 300 (subpatch) 0;
+#X array data2 100 float 2;
+#X coords 0 1 99 -1 200 140 1;
+#X restore 29 479 graph;
+#X text 26 236 change this table \, see it moving in the subprocess
+;
+#X text 28 446 change data2 in the subprocess \, see it moving here
+;
+#X msg 373 194 memset 0 data \, memdump 100 data2;
+#X obj 373 218 shmem 1001 200;
+#X obj 29 202 pd~ -ninsig 0 -noutsig 0 -fifo 20;
+#X text 432 177 refresh rate;
+#X msg 29 138 pd~ start basic_example-subprocess.pd;
+#X connect 2 0 15 0;
+#X connect 3 0 4 0;
+#X connect 7 0 8 0;
+#X connect 8 0 13 0;
+#X connect 9 0 7 0;
+#X connect 13 0 14 0;
+#X connect 17 0 15 0;

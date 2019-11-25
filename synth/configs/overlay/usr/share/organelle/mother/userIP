@@ -1,0 +1,3 @@
+#!/bin/sh
+grep  Accepted /var/log/messages | tail -1 | awk -F' ' '{print $12}'
+exit 0

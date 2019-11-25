@@ -1,0 +1,3 @@
+taskset -p 0x0000008 209
+
+where 209 is pidof pd

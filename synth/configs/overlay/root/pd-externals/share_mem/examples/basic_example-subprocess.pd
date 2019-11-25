@@ -1,0 +1,25 @@
+#N canvas 1203 206 570 408 10;
+#X declare -path ..;
+#N canvas 0 22 450 300 (subpatch) 0;
+#X array data2 100 float 2;
+#X coords 0 1 99 -1 200 140 1 0 0;
+#X restore 326 209 graph;
+#X obj 210 22 loadbang;
+#X msg 210 43 \; pd dsp 1;
+#X obj 33 19 declare -path ..;
+#X obj 33 96 metro 50;
+#X obj 33 57 loadbang;
+#X obj 33 77 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1 1
+;
+#N canvas 0 22 450 300 (subpatch) 0;
+#X array data 100 float 2;
+#X coords 0 1 99 -1 200 140 1 0 0;
+#X restore 325 38 graph;
+#X text 51 138 read and write to the shared memory;
+#X msg 33 156 memdump 0 data \, memset 100 data2;
+#X obj 33 176 shmem 1001 200;
+#X connect 1 0 2 0;
+#X connect 4 0 9 0;
+#X connect 5 0 6 0;
+#X connect 6 0 4 0;
+#X connect 9 0 10 0;

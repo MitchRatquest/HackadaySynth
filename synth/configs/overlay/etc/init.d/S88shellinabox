@@ -1,0 +1,28 @@
+#!/bin/sh
+
+USER=root
+PWD=/root
+OPTIONS="--service=/:${USER}:${USER}:${PWD}:/bin/sh  --disable-ssl --port=80"
+
+case "$1" in
+        start)
+                printf "Starting shellinabox: "
+                /usr/bin/shellinaboxd ${OPTIONS} >/dev/null  2>&1 &
+                [ $? = 0 ] && echo "OK" || echo "FAIL"
+                ;;
+        stop)
+                printf "Stopping shelinabox: "
+                killall shellinaboxd 
+                [ $? = 0 ] && echo "OK" || echo "FAIL"
+                ;;
+        restart|reload)
+                $0 stop
+                $0 start
+                ;;
+        *)
+                echo "Usage: $0 {start|stop|restart}"
+                exit 1
+esac
+
+exit 0
+

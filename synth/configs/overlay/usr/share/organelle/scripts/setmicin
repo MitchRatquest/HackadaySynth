@@ -1,0 +1,5 @@
+#!/bin/sh
+alsactl --file /usr/share/organelle/asound.state.micin restore
+oscsend 127.0.0.1 4000 /oled/aux/erase
+oscsend 127.0.0.1 4000 /oled/aux/3 s "your input method is via mic now"
+oscsend 127.0.0.1 4000 /oled/setscreen i 1
