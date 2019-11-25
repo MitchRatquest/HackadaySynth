@@ -4,9 +4,8 @@
 #
 ################################################################################
 
-PUREDATA_VERSION =  0.49-0
-PUREDATA_SOURCE = pd-$(PUREDATA_VERSION).src.tar.gz
-PUREDATA_SITE = http://msp.ucsd.edu/Software
+PUREDATA_VERSION = 0.50-2
+ORCA_SITE = $(call github,pure-data,pure-data,$(PUREDATA_VERSION))
 PUREDATA_INSTALL_STAGING = YES
 PUREDATA_INSTALL_TARGET = YES
 PUREDATA_AUTORECONF = YES 
