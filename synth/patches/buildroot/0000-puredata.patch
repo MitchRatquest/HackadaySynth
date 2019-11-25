@@ -1,0 +1,47 @@
+--- a/package/Config.in	2017-05-25 14:10:17.310337000 -0500
++++ b/package/Config.in	2017-05-25 18:12:12.459952513 -0500
+@@ -4,6 +4,7 @@
+ 	source "package/skeleton/Config.in"
+ 
+ menu "Audio and video applications"
++	source "package/puredata/Config.in"
+ 	source "package/alsa-utils/Config.in"
+ 	source "package/atest/Config.in"
+ 	source "package/aumix/Config.in"
+--- a/package/puredata/Config.in	1969-12-31 18:00:00.000000000 -0600
++++ b/package/puredata/Config.in	2017-05-25 18:19:12.070549743 -0500
+@@ -0,0 +1,9 @@
++config BR2_PACKAGE_PUREDATA
++	bool "puredata"
++	select BR2_PACKAGE_GETTEXT
++	select BR2_PACKAGE_TK
++	select BR2_PACKAGE_TCL
++	
++	help
++		graphic realtime audio programming language
++
+--- a/package/puredata/puredata.mk	2017-05-25 14:10:17.310337000 -0500
++++ b/package/puredata/puredata.mk	2017-05-25 18:18:50.406831167 -0500
+@@ -0,0 +1,22 @@
++################################################################################
++#
++# puredata
++#
++################################################################################
++
++PUREDATA_VERSION =  0.49-0
++PUREDATA_SOURCE = pd-$(PUREDATA_VERSION).src.tar.gz
++PUREDATA_SITE = http://msp.ucsd.edu/Software
++PUREDATA_INSTALL_STAGING = YES
++PUREDATA_INSTALL_TARGET = YES
++PUREDATA_AUTORECONF = YES 
++PUREDATA_CONF_OPTS = --disable-portaudio --disable-portmidi --no-recursion
++
++PUREDATA_DEPENDENCIES = alsa-utils mplayer gettext tcl tk
++
++define PUREDATA_RUN_AUTOGEN
++	cd $(@D) && PATH=$(BR_PATH) ./autogen.sh
++endef
++PUREDATA_PRE_CONFIGURE_HOOKS += PUREDATA_RUN_AUTOGEN
++
++$(eval $(autotools-package))

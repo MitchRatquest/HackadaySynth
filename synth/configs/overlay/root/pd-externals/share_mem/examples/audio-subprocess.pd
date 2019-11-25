@@ -1,0 +1,16 @@
+#N canvas 128 649 713 267 12;
+#X declare -path ..;
+#X msg 429 57 \; pd dsp 1;
+#X obj 429 33 loadbang;
+#X obj 46 187 dac~ 1 2;
+#X obj 81 130 stdout;
+#X obj 290 28 adc~ 1;
+#X text 69 54 forward audio using diferent way;
+#X obj 363 115 declare -path ..;
+#X obj 47 26 shmem_receive~ 1212;
+#X obj 81 99 shmem_send~ 1213;
+#X connect 1 0 0 0;
+#X connect 4 0 2 1;
+#X connect 7 0 2 0;
+#X connect 7 0 8 0;
+#X connect 8 0 3 0;

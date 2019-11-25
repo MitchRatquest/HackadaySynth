@@ -1,0 +1,181 @@
+#! /bin/sh
+
+[ -f /etc/gadget.conf ] || exit 0
+
+source /etc/gadget.conf #loads variable declarations from file
+
+NAME=USB_OTG_interface
+VID="0x1d6b"
+PID="0x0104"
+SERIALNUM=9112473
+MANUFACTURER="Pimoroni Ltd."
+PRODUCT="PiratePython"
+
+load_module () {
+	modprobe libcomposite
+	mount -t configfs none /sys/kernel/config &>/dev/null
+}
+
+create_skeleton() {
+	cd /sys/kernel/config/usb_gadget
+	mkdir -p g1
+	cd g1
+	
+	echo $VID > idVendor # Linux Foundation
+	echo $PID > idProduct # Multifunction Composite Gadget
+	echo "0x3066" > bcdDevice # v1.0.0
+	echo "0x0200" > bcdUSB # USB2
+	echo "0x02" > bDeviceClass
+	echo "0x00" > bDeviceSubClass
+	
+	#windows below
+	echo "1" > os_desc/use
+	echo "0xcd" > os_desc/b_vendor_code
+	echo "MSFT100" > osc_desc/qwsign
+	
+	mkdir -p strings/0x409 #english strings
+	echo $SERIALNUM > strings/0x409/serialnumber #anything
+	echo $MANUFACTURER > strings/0x409/manufacturer  #anything
+	echo $PRODUCT > strings/0x409/product  #anything
+	mkdir -p configs/c.1
+	mkdir -p configs/c.1/strings/0x409 #english 
+	echo 500 > configs/c.1/MaxPower #in mA
+	echo -ne "" > /tmp/gadget.conf #clean the file for further configs
+}
+
+rndis_setup() {
+	mkdir -p functions/rndis.usb0
+	echo "RNDIS" > functions/rndis.usb0/os_desc/interface.rndis/compatible_id
+	echo "5162001" > functions/rndis.usb0/os_desc/interface.rndis/sub_compatible_id
+	
+	#echo $MAC_HOST > functions/rndis.usb0/host_addr
+	#echo $MAC_DEV > functions/rndis.usb0/dev_addr
+	# IF WINDOWS:
+	#ln -s configs/c.1 os_desc
+	ln -s functions/rndis.usb0 configs/c.1 &>/dev/null
+	echo "rndis" >> /tmp/gadget.conf
+}
+mass_storage_setup() {
+	mkdir -p functions/mass_storage.usb0
+	echo 1 > functions/mass_storage.usb0/stall
+	echo 0 > functions/mass_storage.usb0/lun.0/cdrom
+	echo 0 > functions/mass_storage.usb0/lun.0/ro
+	echo 0 > functions/mass_storage.usb0/lun.0/nofua
+	echo $FILE > functions/mass_storage.usb0/lun.0/file
+	ln -s functions/mass_storage.usb0 configs/c.1/
+	echo "mass" >> /tmp/gadget.conf
+}
+midi_setup() {
+	mkdir -p functions/midi.usb0
+	ln -s functions/midi.usb0 configs/c.1 &>/dev/null
+	echo "midi" >> /tmp/gadget.conf
+}
+
+hid_setup() { #https://github.com/qlyoung/keyboard-gadget/blob/master/gadget-setup.sh
+	PROTOCOL=1
+	SUBCLASS=1
+	REPORT_LENGTH=8
+	echo -ne \\x05\\x01\\x09\\x06\\xa1\\x01\\x05\\x07\\x19\\xe0\\x29\\xe7\\x15\\x00\\x25\\x01\\x75\\x01\\x95\\x08\\x81\\x02\\x95\\x01\\x75\\x08\\x81\\x03\\x95\\x05\\x75\\x01\\x05\\x08\\x19\\x01\\x29\\x05\\x91\\x02\\x95\\x01\\x75\\x03\\x91\\x03\\x95\\x06\\x75\\x08\\x15\\x00\\x25\\x65\\x05\\x07\\x19\\x00\\x29\\x65\\x81\\x00\\xc0 > functions/hid.0/report_desc
+
+	#DESCRIPTOR=/config/usb_gadget/keyboardgadget/kybd-descriptor.bin  #  binary blob of report descriptor, see HID class spec
+	mkdir -p functions/hid.usb0
+	echo $PROTOCOL > functions/hid.usb0/protocol
+	echo $SUBCLASS > functions/hid.usb0/subclass
+	echo $REPORT_LENGTH > functions/hid.usb0/report_length
+	cat $DESCRIPTOR > functions/hid.usb0/report_desc
+	
+	ln -s functions/hid.usb0 configs/c.1
+	echo "hid" >> /tmp/gadget.conf
+}
+
+disable_gadget() { #remove gadgets as declared in /tmp/gadget.conf
+	cd /sys/kernel/config/usb_gadget/g1
+	ifdown usb0
+	echo "" > UDC #disables working
+	while read i;  #read from config file /tmp/gadget.conf
+	do
+		case $i in
+			rndis)
+				rm -R configs/c.1/rndis.usb0
+				rm -R functions/rndis.usb0 &>/dev/null
+				;;
+			mass)
+				rm -R functions/mass_storage.usb/ &>/dev/null
+				;;
+			midi)
+				rm -R functions/midi.usb0  &>/dev/null
+				;;
+			hid)
+				rm -R functions/hid.usb0  &>/dev/null
+				;;
+			*)
+				echo -ne "WARNING: SOMETHING WEIRD FOUND "
+				echo  ">>> $i"
+				;;
+		esac
+	done < /tmp/gadget.conf
+	#rm -R configs/c.1/*
+	#rmdir configs/c.1
+	rm -R strings/0x406  &>/dev/null
+#	rmdir strings/0x406
+	cd ..
+	rm -R g1/*  &>/dev/null
+	rmdir g1
+	echo -ne "" > /etc/gadget.conf
+}
+case "$1" in
+  start)
+    printf "Starting $NAME: "
+	echo mmc0 > /sys/class/leds/nanopi\:blue\:status/trigger
+	#USB OTG midi/eth/mass storage below
+	load_module
+	create_skeleton
+	if [ $rndis == 1 ]; then
+		rndis_setup
+	fi
+	if [ $mass == 1 ]; then
+		mass_storage_setup
+	fi
+	if [ $midi == 1 ]; then 
+		midi_setup
+	fi
+#	if [ $hid == 1 ]; then
+#		hid_setup
+#	fi
+
+	echo "Config 1: RNDIS network" > configs/c.1/strings/0x409/configuration #double check this
+	ls /sys/class/udc > UDC #should only be one on allwinner h3
+
+	ip addr flush dev usb0
+	ip addr flush dev lo
+
+	ifup usb0 2&>/dev/null
+	ifconfig usb0 192.168.100.1
+	ifup lo 2&>/dev/null #xauth uses localhost loopback
+    [ $? = 0 ] && echo "OK" || echo "FAIL"
+    ;;
+  stop)
+    printf "Stopping $NAME: "
+#	echo none > /sys/class/leds/nanopi:blue:status/trigger
+#	ifdown usb0
+#	disable_gadget
+#	#modprobe -r g_ether
+    [ $? = 0 ] && echo "OK" || echo "FAIL"
+    ;;
+  restart|reload)
+    echo "Restarting $NAME: "
+    $0 stop
+    sleep 1
+    $0 start
+    ;;
+  udown)
+    disable_gadget
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart|reload}" >&2
+    exit 1
+    ;;
+esac
+
+exit 0
+

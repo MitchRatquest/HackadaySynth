@@ -1,0 +1,23 @@
+#!/bin/sh
+source /etc/wireguard/conf
+
+#private key is generated via `wg genkey`
+#public key is `echo $PRIVATEKEY | wp pubkey`
+#the peer is the server's public key
+#you put this computer's public key in the server's conf
+#with the appropriate setup and routing information
+
+
+#sets up the wireguard interface
+
+ip link add dev wg0 type wireguard
+ip address add dev wg0 $LOCALADDRESS
+wg set wg0 listen-port 21841 \
+	private-key $PRIVKEY \
+	peer $PEER \
+	allowed-ips $SUBNET/$MASK \
+	endpoint $SERVERIP:24735
+
+ip link set up dev wg0
+exit 0
+

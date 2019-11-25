@@ -1,0 +1,186 @@
+#N canvas 316 279 1260 717 10;
+#X msg 116 142 matrix 10 3 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+17 18 19 20 21 22 23 24 25 26 27 28 29;
+#X msg 124 175 matrix 9 2 0 1 2 3 4 5 6 7 8 10 11 12 13 14 15 16 17
+18;
+#X msg 102 106 matrix 10 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0;
+#X msg 138 198 matrix 11 4 0 1 2 3 4 5 6 7 8 9 111 10 11 12 13 14 15
+16 17 18 19 199 20 21 22 23 24 25 26 27 28 29 299 30 31 32 33 34 35
+36 37 38 39 333;
+#X msg 171 270 row 2 0 1 2 3 4 5 6 7 8 9 10 11 12;
+#X msg 608 122 getMatrix;
+#X msg 232 364 element 0 2 200;
+#X msg 632 182 getRow 1;
+#X obj 102 481 mtx_preset 10 3;
+#X obj 102 508 print;
+#X msg 200 318 col 8 4 5 6;
+#X obj 608 438 t a;
+#X text 180 18 preset interpolation object;
+#X text 113 79 set values;
+#X text 608 98 get values;
+#X msg 187 293 setRow 2 10;
+#X msg 215 339 setCol 9 11;
+#X msg 153 249 matrix 10;
+#X msg 620 151 getRows;
+#X msg 646 217 getRow 1.5;
+#X msg 664 267 getElements 1;
+#X msg 673 291 getElements 1.5;
+#X text 681 121 get matrix in one line (selector: matrix sizex sizey
+);
+#X text 679 151 get matrix row by row (selector: rows y);
+#X text 697 182 get row 1 in one line (selector: row);
+#X text 717 215 get interpolation between row 1 and 2 in one line (selector:
+row), f 66;
+#N canvas 246 179 710 447 simple_example 0;
+#X obj 34 203 route row;
+#X obj 34 272 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 3000 1;
+#X msg 255 124 getRow \$1;
+#X floatatom 255 104 5 0 4 0 - - -, f 5;
+#X obj 34 229 unpack f f f f f f f f f f;
+#X obj 54 272 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 2700 1;
+#X obj 74 272 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 2400 1;
+#X obj 94 272 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 2100 1;
+#X obj 114 272 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 1800 1;
+#X obj 134 272 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 1500 1;
+#X obj 154 272 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 1200 1;
+#X obj 174 272 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 900 1;
+#X obj 194 272 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 600 1;
+#X obj 214 272 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 300 1;
+#X obj 34 27 loadbang;
+#X msg 34 55 matrix 10 4 0 0 0 0 0 0 0 0 0 0 10 20 30 40 50 60 70 80
+90 100 100 90 80 70 60 50 40 30 20 10 0 0 0 0 0 0 0 0 0 0;
+#X obj 34 170 mtx_preset 10 4;
+#X connect 0 0 4 0;
+#X connect 2 0 16 0;
+#X connect 3 0 2 0;
+#X connect 4 0 1 0;
+#X connect 4 1 5 0;
+#X connect 4 2 6 0;
+#X connect 4 3 7 0;
+#X connect 4 4 8 0;
+#X connect 4 5 9 0;
+#X connect 4 6 10 0;
+#X connect 4 7 11 0;
+#X connect 4 8 12 0;
+#X connect 4 9 13 0;
+#X connect 14 0 15 0;
+#X connect 15 0 16 0;
+#X connect 16 0 0 0;
+#X restore 98 554 pd simple_example;
+#N canvas 408 247 795 409 complex_example 0;
+#X obj 53 165 mtx_preset 100 10;
+#X floatatom 319 119 5 0 0 0 - - -, f 5;
+#X obj 53 94 r to_mtx_preset;
+#X floatatom 319 139 5 0 0 0 - - -, f 5;
+#X floatatom 319 159 5 0 0 0 - - -, f 5;
+#X floatatom 319 179 5 0 0 0 - - -, f 5;
+#X floatatom 319 198 5 0 0 0 - - -, f 5;
+#X floatatom 319 99 5 0 0 0 - - -, f 5;
+#X obj 574 105 vradio 15 1 0 10 save_parameters empty empty 0 -8 0
+10 -258113 -1 -1 2;
+#X text 487 164 save_presets;
+#X obj 599 105 vsl 15 150 10 0 0 0 getElement empty empty 0 -9 0 10
+-4034 -1 -1 0 1;
+#X text 630 167 load / interpol presets;
+#X obj 70 118 r getElement;
+#X msg 70 142 getElements \$1;
+#X floatatom 51 358 5 0 0 0 - - -, f 5;
+#X floatatom 147 358 5 0 0 0 - - -, f 5;
+#X obj 53 187 route elements;
+#X obj 53 276 send;
+#X obj 53 231 unpack f f;
+#X msg 110 252 symbol from_mtx_preset_\$1;
+#X obj 371 98 preset_param 0;
+#X floatatom 319 242 5 0 0 0 - - -, f 5;
+#X text 159 20 using mtx_preset for a complex preset system management
+;
+#X obj 371 197 preset_param 5;
+#X obj 371 118 preset_param 1;
+#X obj 371 138 preset_param 2;
+#X obj 371 158 preset_param 3;
+#X obj 371 178 preset_param 4;
+#X obj 371 241 preset_param 99;
+#X obj 51 330 r parametre_0;
+#X obj 147 330 r parametre_1;
+#X text 322 336 use _mtx_preset if you want to save and read presets
+in a text file;
+#X text 374 219 ...;
+#X msg 53 209 \$2 \$1;
+#X connect 0 0 16 0;
+#X connect 1 0 24 0;
+#X connect 2 0 0 0;
+#X connect 3 0 25 0;
+#X connect 4 0 26 0;
+#X connect 5 0 27 0;
+#X connect 6 0 23 0;
+#X connect 7 0 20 0;
+#X connect 12 0 13 0;
+#X connect 13 0 0 0;
+#X connect 16 0 33 0;
+#X connect 18 0 17 0;
+#X connect 18 1 19 0;
+#X connect 19 0 17 1;
+#X connect 20 0 7 0;
+#X connect 21 0 28 0;
+#X connect 23 0 6 0;
+#X connect 24 0 1 0;
+#X connect 25 0 3 0;
+#X connect 26 0 4 0;
+#X connect 27 0 5 0;
+#X connect 28 0 21 0;
+#X connect 29 0 14 0;
+#X connect 30 0 15 0;
+#X connect 33 0 18 0;
+#X restore 97 580 pd complex_example;
+#X text 774 292 get interpolation between line 1 and 2 element by element
+;
+#X msg 252 393 resize 5 4;
+#X msg 267 419 copyRow 1 2;
+#X text 348 419 copy row 1 value to row 2;
+#X msg 700 354 mixRows 1 1 1.5;
+#X msg 710 398 mixElements 1 1 1.5;
+#X text 213 481 10 col and 3 row;
+#X msg 686 318 getElement 3 1.5;
+#X text 794 318 get interpolation between element colum 3 \, row 1
+\, and element column 3 \, row 2(selector element);
+#X text 834 398 mix row together \, output a row elements by element
+line (selector mixElements x);
+#X text 765 267 get row 1 element by element (selector: elements x)
+;
+#X text 335 394 change matrix size;
+#X text 803 355 mix row together (1 * row1 + 1* row2 + 1.5 * row3)
+\, output a row in 1 line (selector mixRows);
+#X connect 0 0 8 0;
+#X connect 1 0 8 0;
+#X connect 2 0 8 0;
+#X connect 3 0 8 0;
+#X connect 4 0 8 0;
+#X connect 5 0 11 0;
+#X connect 6 0 8 0;
+#X connect 7 0 11 0;
+#X connect 8 0 9 0;
+#X connect 10 0 8 0;
+#X connect 11 0 8 0;
+#X connect 15 0 8 0;
+#X connect 16 0 8 0;
+#X connect 17 0 8 0;
+#X connect 18 0 11 0;
+#X connect 19 0 11 0;
+#X connect 20 0 11 0;
+#X connect 21 0 11 0;
+#X connect 29 0 8 0;
+#X connect 30 0 8 0;
+#X connect 32 0 11 0;
+#X connect 33 0 11 0;
+#X connect 35 0 11 0;

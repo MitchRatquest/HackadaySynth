@@ -1,0 +1,18 @@
+#N canvas 720 715 493 300 10;
+#X obj 43 110 sig~ 333;
+#X obj 43 194 dac~;
+#X floatatom 43 63 5 0 0 0 - - -, f 5;
+#X obj 137 197 oscillo~;
+#X obj 43 162 *~ 0.1;
+#X text 30 16 saw2~ is a band-limited sawtooth oscillator. similar
+algorythm than saw~ \, but using difernt optimisations;
+#X obj 43 86 mtof;
+#X obj 42 137 saw2~;
+#X obj 287 69 saw2_table_generation;
+#X connect 0 0 7 0;
+#X connect 2 0 6 0;
+#X connect 4 0 1 0;
+#X connect 4 0 1 1;
+#X connect 6 0 0 0;
+#X connect 7 0 4 0;
+#X connect 7 0 3 0;

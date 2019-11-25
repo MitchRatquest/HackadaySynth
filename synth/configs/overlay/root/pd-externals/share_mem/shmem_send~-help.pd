@@ -1,0 +1,26 @@
+#N canvas 267 433 646 491 12;
+#X obj 56 76 osc~ 444;
+#X floatatom 56 53 5 0 0 0 - - -;
+#X obj 156 45 noise~;
+#X obj 155 76 *~;
+#X obj 189 79 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 57 105 +~;
+#X text 52 224 audio send throw shared memory is 1 bloc latter than
+with standard connection;
+#X obj 57 140 shmem_send~ 2323;
+#X text 52 277 This is mostlly usefull to share audio data between
+pd and a pd~ object (see example);
+#X text 51 323 This objects are using a fixed 40 bloc lifo;
+#X obj 57 196 s shmem_receive;
+#X text 71 176 This is a data connection;
+#X text 59 394 see the receiver help;
+#X obj 249 392 shmem_receive~;
+#X text 245 11 send audio throw share memory;
+#X connect 0 0 5 0;
+#X connect 1 0 0 0;
+#X connect 2 0 3 0;
+#X connect 3 0 5 0;
+#X connect 4 0 3 1;
+#X connect 5 0 7 0;
+#X connect 7 0 10 0;

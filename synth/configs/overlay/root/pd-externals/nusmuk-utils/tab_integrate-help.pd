@@ -1,0 +1,62 @@
+#N canvas 436 345 859 564 10;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array src1 100 float 1;
+#A 0 0.128572 -0.0714291 -0.0714291 -0.0857149 -0.100001 -0.114286
+-0.114286 -0.114286 -0.114286 -0.114286 -0.114286 -0.100001 -0.100001
+-0.0857149 -0.0857149 -0.0714291 -0.0571433 -0.0285717 -0.0142859 -0.0142859
+0.0142857 0.0142857 0.0857178 0.100004 0.128575 0.142861 0.157147 0.171433
+0.185718 0.185718 0.185718 0.185718 0.157147 0.142861 0.128575 0.100004
+0.0428572 0.0428572 0.0428572 0.0428572 0.0285714 0.0285714 0.0285714
+0.0142856 0.0142856 -1.78814e-07 -1.78814e-07 -0.014286 -0.014286 -0.014286
+-0.0285718 -0.0285718 -0.0285718 -0.0428576 -0.0428576 -0.0428576 -0.0428576
+-0.0428576 -0.0428576 -0.0428576 -0.0428576 -0.0428576 -0.0428576 -0.0428576
+-0.0428576 -0.0285718 -0.014286 -0.014286 -1.78814e-07 -1.78814e-07
+0.0142856 0.0285714 0.0285714 0.0428572 0.0428572 0.0428572 0.057143
+0.0714288 0.0285715 0.0285715 0.0285715 0.0285715 0.0285715 0.0285715
+0.0285715 0.0285715 0.0285715 0.0142857 -0.0142859 -0.0285717 -0.0428575
+-0.0571433 -0.0857149 -0.114286 -0.142858 -0.17143 -0.214287 -0.242859
+-0.27143 -0.300002;
+#X coords 0 1 99 -1 200 140 1;
+#X restore 534 10 graph;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array dst 100 float 0;
+#X coords 0 1 99 -1 200 140 1;
+#X restore 540 217 graph;
+#X obj 61 31 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 61 106 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 60 264 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X msg 78 199 dst dst;
+#X msg 60 170 src1 src1;
+#X text 108 465 IEM KUG;
+#X text 88 453 musil;
+#X text 122 453 @;
+#X text 130 453 iem.at;
+#X text 91 475 Graz \, Austria;
+#X text 174 269 initial arguments:;
+#X text 73 243 <bang> output;
+#X text 129 198 <dst> xxx : change destination name;
+#X text 225 86 the minimum of the 3 array lengths);
+#X text 123 170 <src1> xxx : change source name 1;
+#X text 151 283 1.arg: <symbol> source-name 1;
+#X text 212 72 (the number of samples which were added are:;
+#X text 43 442 (c) Thomas Musil 2000 - 2009;
+#X text 12 3 tab_max;
+#X text 90 29 <bang> max the 2 src-arrays to dst-array;
+#X text 54 420 ch \, help file based on :;
+#X text 152 299 2.arg: <symbol> destination-name;
+#X obj 60 225 tab_integrate src1 dst;
+#X obj 34 156 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 61 78 tab_integrate src1 dst;
+#X msg 89 54 10;
+#X text 127 53 only the first 10 moints;
+#X connect 2 0 26 0;
+#X connect 5 0 24 0;
+#X connect 6 0 24 0;
+#X connect 24 0 4 0;
+#X connect 25 0 24 0;
+#X connect 26 0 3 0;
+#X connect 27 0 26 0;

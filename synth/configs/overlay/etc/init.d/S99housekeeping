@@ -1,0 +1,30 @@
+#!/bin/sh
+
+case "$1" in
+	start)
+		chvt 4 #main python curses on vt 4
+		alsactl --file /root/asound.state restore
+		sysctl -w kernel.printk="0 4 1 2" #changes kmsg loglevel
+		echo 4 > /proc/irq/28/smp_affinity #only run soundcard IRQ on cpu 3
+		mkdir -p /tmp/state/ #misc patches use this space
+		;;
+	stop)
+		
+		
+		
+		
+		
+		;;
+	restart|reload)
+		echo "RESTARTING CHAMBLE"
+		$0 stop
+		sleep 1
+		$0 start
+		;;
+  *)
+    echo "Usage: $0 {start|stop|restart|reload}" >&2
+    exit 1
+    ;;
+esac
+
+exit 0
