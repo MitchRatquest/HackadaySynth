@@ -1,0 +1,34 @@
+--- a/arch/arm/boot/dts/sun8i-h3-nanopi-neo.dts	2019-11-26 11:53:23.912144311 -0600
++++ b/arch/arm/boot/dts/sun8i-h3-nanopi-neo.dts	2019-11-26 11:54:21.376275052 -0600
+@@ -45,6 +45,16 @@
+ / {
+ 	model = "FriendlyARM NanoPi NEO";
+ 	compatible = "friendlyarm,nanopi-neo", "allwinner,sun8i-h3";
++        connector {
++        compatible = "hdmi-connector";
++        type = "a";
++        
++        port {
++            hdmi_con_in: endpoint {
++                remote-endpoint = <&hdmi_out_con>;
++            };
++        };
++    };
+ };
+ 
+ &ehci0 {
+@@ -124,3 +134,13 @@
+ 	status = "enabled";
+ };
+ 
++&hdmi {
++    status = "okay";
++};
++
++&hdmi_out {
++    hdmi_out_con: endpoint {
++        remote-endpoint = <&hdmi_con_in>;
++    };
++};
++
+
