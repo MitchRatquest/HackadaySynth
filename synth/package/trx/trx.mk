@@ -12,7 +12,7 @@ TRX_INSTALL_TARGET = YES
 TRX_AUTORECONF = YES 
 #TRX_CONF_OPTS = --disable-portaudio --disable-portmidi --no-recursion
 
-TRX_DEPENDENCIES = opus ortp
+TRX_DEPENDENCIES = opus ortp libortp
 
 
 define TRX_BUILD_CMDS

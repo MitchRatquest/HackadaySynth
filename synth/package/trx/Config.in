@@ -2,6 +2,7 @@ config BR2_PACKAGE_TRX
 	bool "trx"
 	select BR2_PACKAGE_OPUS
 	select BR2_PACKAGE_OPUSFILE
+    select BR2_PACKAGE_ORTP
 	
 	help
 		realtime audio stream lib
