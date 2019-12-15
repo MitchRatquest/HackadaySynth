@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Buildroot 2019.11-g32c8620 Configuration
+# Buildroot 2019.11-g0382e9c Configuration
 #
 BR2_HAVE_DOT_CONFIG=y
 BR2_HOST_GCC_AT_LEAST_4_9=y
@@ -2870,14 +2870,16 @@ BR2_PACKAGE_XVISOR_ARCH_SUPPORTS=y
 #
 # Text editors and viewers
 #
-BR2_PACKAGE_ED=y
+# BR2_PACKAGE_ED is not set
 # BR2_PACKAGE_JOE is not set
-# BR2_PACKAGE_LESS is not set
+BR2_PACKAGE_LESS=y
 # BR2_PACKAGE_MC is not set
 # BR2_PACKAGE_MOST is not set
-# BR2_PACKAGE_NANO is not set
-BR2_PACKAGE_UEMACS=y
-# BR2_PACKAGE_VIM is not set
+BR2_PACKAGE_NANO=y
+BR2_PACKAGE_NANO_TINY=y
+# BR2_PACKAGE_UEMACS is not set
+BR2_PACKAGE_VIM=y
+BR2_PACKAGE_VIM_RUNTIME=y
 
 #
 # Filesystem images
