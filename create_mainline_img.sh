@@ -8,7 +8,7 @@ then
 fi
 
 cd buildroot-"$VERSION"
-patch -p1 < ../patches/buildroot/0000-add-pd-tk.patch
+tar xvf patches/buildroot/externals.tar.gz -C `pwd`/buildroot-"$VERSION"/package/
 cd ..
 
 
