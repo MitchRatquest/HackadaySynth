@@ -10,10 +10,9 @@
  	source "package/aumix/Config.in"
 --- a/package/puredata/Config.in	1969-12-31 18:00:00.000000000 -0600
 +++ b/package/puredata/Config.in	2017-05-25 18:19:12.070549743 -0500
-@@ -0,0 +1,9 @@
+@@ -0,0 +1,8 @@
 +config BR2_PACKAGE_PUREDATA
 +	bool "puredata"
-+	select BR2_PACKAGE_GETTEXT
 +	select BR2_PACKAGE_TK
 +	select BR2_PACKAGE_TCL
 +	
@@ -37,7 +36,7 @@
 +PUREDATA_AUTORECONF = YES 
 +PUREDATA_CONF_OPTS = --disable-portaudio --disable-portmidi --no-recursion
 +
-+PUREDATA_DEPENDENCIES = alsa-utils mplayer gettext tcl tk
++PUREDATA_DEPENDENCIES = alsa-utils tcl tk
 +
 +define PUREDATA_RUN_AUTOGEN
 +	cd $(@D) && PATH=$(BR_PATH) ./autogen.sh
