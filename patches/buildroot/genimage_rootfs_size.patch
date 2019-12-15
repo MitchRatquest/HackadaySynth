@@ -1,0 +1,11 @@
+--- a/board/friendlyarm/nanopi-neo/genimage.cfg	2019-12-15 11:56:52.704502475 -0600
++++ b/board/friendlyarm/nanopi-neo/genimage.cfg	2019-12-15 11:56:48.040580576 -0600
+@@ -29,6 +29,6 @@
+ 	partition rootfs {
+ 		partition-type = 0x83
+ 		image = "rootfs.ext4"
+-		size = 32M
++		size = 128M
+ 	}
+ }
+

@@ -12,5 +12,5 @@ patch -p1 < ../patches/buildroot/0000-add-pd-tk.patch
 cd ..
 
 
-make O=$PWD -C buildroot-"$VERSION"/ defconfig BR2_DEFCONFIG=../configs/buildroot_defconfig
+make O=$PWD -C buildroot-"$VERSION"/ defconfig BR2_DEFCONFIG=../configs/buildroot-vanilla-config
 make

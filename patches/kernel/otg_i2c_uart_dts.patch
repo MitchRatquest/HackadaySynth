@@ -1,6 +1,6 @@
---- a/arch/arm/boot/dts/sun8i-h3-nanopi-neo.dts	2019-08-16 03:11:12.000000000 -0500
-+++ b/arch/arm/boot/dts/sun8i-h3-nanopi-neo.dts	2019-08-17 18:05:23.250686843 -0500
-@@ -51,22 +51,82 @@
+--- a/arch/arm/boot/dts/sun8i-h3-nanopi-neo.dts	2019-12-15 11:24:14.817861824 -0600
++++ b/arch/arm/boot/dts/sun8i-h3-nanopi-neo.dts	2019-12-15 11:41:21.382299779 -0600
+@@ -51,22 +51,61 @@
  	status = "okay";
  };
  
@@ -8,13 +8,22 @@
 -	phy-handle = <&int_mii_phy>;
 -	phy-mode = "mii";
 -	allwinner,leds-active-low;
-+&ohci0 {
+-	status = "okay";
+-};
+-
+ &ohci0 {
  	status = "okay";
  };
  
--&ohci0 {
-+&ehci0 {
-+	status = "okay";
+ &usb_otg {
+ 	status = "okay";
+-	dr_mode = "peripheral";
++	dr_mode = "otg";
+ };
+ 
+ &usbphy {
+-	usb0_id_det-gpios = <&pio 6 12 GPIO_ACTIVE_HIGH>; /* PG12 */
++ 	usb0_id_det-gpios = <&pio 6 12 GPIO_ACTIVE_HIGH>; /* PG12 */
 +};
 +
 +&ohci1 {
@@ -38,18 +47,8 @@
 +};
 +
 +&ehci3 {
- 	status = "okay";
- };
- 
- &usb_otg {
- 	status = "okay";
--	dr_mode = "peripheral";
-+	dr_mode = "otg";
- };
- 
- &usbphy {
- 	usb0_id_det-gpios = <&pio 6 12 GPIO_ACTIVE_HIGH>; /* PG12 */
- };
++ 	status = "okay";
++};
 +
 +&i2c0 {
 +	status = "okay";
@@ -71,22 +70,4 @@
 +
 +&spi0 {
 +	status = "okay";
-+	 spidev {
-+		compatible = "spidev";
-+		status = "okay";
-+		reg = <0>;
-+		spi-max-frequency = <1000000>;
-+	};
-+};
-+
-+&display-engine {
-+	status = "enabled";
-+};
-+
-+&chosen {
-+	&framebuffer-tve {
-+		status = "enabled";
-+	};
-+};
-+
-
+ };
