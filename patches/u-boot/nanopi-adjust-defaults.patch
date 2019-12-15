@@ -1,5 +1,5 @@
---- np.orig	2019-12-14 19:29:02.418313480 -0600
-+++ nanopi_neo_defconfig	2019-12-14 19:31:24.865112826 -0600
+--- a/configs/nanopi_neo_defconfig	2019-12-14 19:29:02.418313480 -0600
++++ b/configs/nanopi_neo_defconfig	2019-12-14 19:31:24.865112826 -0600
 @@ -3,7 +3,7 @@
  CONFIG_NR_DRAM_BANKS=1
  CONFIG_SPL=y
