@@ -24,7 +24,7 @@
 ::sysinit:/etc/init.d/rcS
 
 # Put a getty on the serial port
-#console::respawn:/sbin/getty -L  console 0 vt100 # GENERIC_SERIAL
+console::respawn:/sbin/getty -L  console 0 vt100 
 #console::respawn:/sbin/getty -L console 0 xterm-256color
 
 #tty3::respawn:/sbin/getty -L tty3 115200 xterm-256color -n -l /root/osc2.py
