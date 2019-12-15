@@ -33,11 +33,12 @@
 
 --- a/dev/null	2019-05-14 23:06:29.539627306 -0500
 +++ b/package/trx/Config.in	2019-05-28 21:24:48.833463902 -0500
-@@ -0,0 +1,8 @@
+@@ -0,0 +1,9 @@
 +config BR2_PACKAGE_TRX
 +	bool "trx"
 +	select BR2_PACKAGE_OPUS
 +	select BR2_PACKAGE_OPUSFILE
++	select BR2_PACKAGE_ORTP
 +	
 +	help
 +		Streams alsa endpoints over UDP using oRTP and opus
