@@ -7,7 +7,7 @@
 +#
 +################################################################################
 +
-+TRX_VERSION =  0.3
++TRX_VERSION =  0.4
 +TRX_SOURCE = trx-$(TRX_VERSION).tar.gz
 +TRX_SITE= http://www.pogo.org.uk/~mark/trx/releases
 +TRX_INSTALL_STAGING = YES
@@ -40,7 +40,7 @@
 +	select BR2_PACKAGE_OPUSFILE
 +	
 +	help
-+		realtime audio stream lib
++		Streams alsa endpoints over UDP using oRTP and opus
 +
 
 --- a/dev/null	2019-05-14 23:06:29.539627306 -0500
