@@ -1,0 +1,46 @@
+#!/bin/sh
+NAME=USB_OTG_interface
+VID="0x1d6b"
+PID="0x0104"
+SERIALNUM=9112473
+MANUFACTURER="Pimoroni Ltd."
+PRODUCT="PiratePython"
+modprobe libcomposite
+mount -t configfs none /sys/kernel/config &>/dev/null
+cd /sys/kernel/config/usb_gadget
+mkdir -p g1
+cd g1
+
+echo $VID > idVendor # Linux Foundation
+echo $PID > idProduct # Multifunction Composite Gadget
+echo "0x3066" > bcdDevice # v1.0.0
+echo "0x0200" > bcdUSB # USB2
+echo "0x02" > bDeviceClass
+echo "0x00" > bDeviceSubClass
+
+
+mkdir -p strings/0x409 #english strings
+echo $SERIALNUM > strings/0x409/serialnumber #anything
+echo $MANUFACTURER > strings/0x409/manufacturer  #anything
+echo $PRODUCT > strings/0x409/product  #anything
+mkdir -p configs/c.1
+mkdir -p configs/c.1/strings/0x409 #english 
+echo 500 > configs/c.1/MaxPower #in mA
+echo -ne "" > /tmp/gadget.conf #clean the file for further configs
+mkdir -p functions/rndis.usb0
+echo "RNDIS" > functions/rndis.usb0/os_desc/interface.rndis/compatible_id
+echo "5162001" > functions/rndis.usb0/os_desc/interface.rndis/sub_compatible_id
+
+#echo $MAC_HOST > functions/rndis.usb0/host_addr
+#echo $MAC_DEV > functions/rndis.usb0/dev_addr
+# IF WINDOWS:
+ln -s functions/rndis.usb0 configs/c.1 &>/dev/null
+echo "rndis" >> /tmp/gadget.conf
+ls /sys/class/udc > UDC #should only be one on allwinner h3
+
+ip addr flush dev usb0
+ip addr flush dev lo
+
+ifup usb0 2&>/dev/null
+ifconfig usb0 192.168.100.1
+ifup lo 2&>/dev/null #xauth uses localhost loopback
