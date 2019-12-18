@@ -9,6 +9,7 @@ fi
 
 cd buildroot-"$VERSION"
 tar xvf patches/buildroot/externals.tar.gz -C `pwd`/buildroot-"$VERSION"/package/
+cd buildroot-"$VERSION" && patch -p1 < ../patches/buildroot/0003-ssh-root-x11.patch
 cd ..
 
 
