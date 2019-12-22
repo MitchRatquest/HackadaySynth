@@ -7,9 +7,14 @@ then
 	tar zvxf buildroot-"$VERSION".tar.gz
 fi
 
-cd buildroot-"$VERSION"
+#extract custom packages to buildroot's directory
 tar xvf patches/buildroot/externals.tar.gz -C `pwd`/buildroot-"$VERSION"/package/
-cd buildroot-"$VERSION" && patch -p1 < ../patches/buildroot/0003-ssh-root-x11.patch
+
+#apply patches to buildroot
+cd buildroot-"$VERSION"
+patch -p1 < ../patches/buildroot/0003-ssh-root-x11.patch
+patch -p1 < ../patches/buildroot/0004-package-config.patch
+patch -p1 < ../patches/buildroot/genimage_rootfs_size.patch
 cd ..
 
 

@@ -1,0 +1,13 @@
+--- a/package/Config.in	2019-12-22 08:55:26.149478770 -0600
++++ b/package/Config.in	2019-12-15 21:25:30.089964354 -0600
+@@ -10,6 +10,9 @@
+ 	source "package/skeleton-init-sysv/Config.in"
+ 
+ menu "Audio and video applications"
++	source "package/puredata/Config.in"
++	source "package/orca/Config.in"
++	source "package/trx/Config.in"
+ 	source "package/alsa-utils/Config.in"
+ 	source "package/atest/Config.in"
+ 	source "package/aumix/Config.in"
+
