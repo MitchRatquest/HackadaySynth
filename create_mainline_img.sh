@@ -15,6 +15,7 @@ cd buildroot-"$VERSION"
 patch -p1 < ../patches/buildroot/0003-ssh-root-x11.patch
 patch -p1 < ../patches/buildroot/0004-package-config.patch
 patch -p1 < ../patches/buildroot/genimage_rootfs_size.patch
+patch -p1 < ../patches/buildroot/bootcmd.patch
 cd ..
 
 
