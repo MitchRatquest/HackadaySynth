@@ -1,6 +1,6 @@
 --- a/arch/arm/boot/dts/sun8i-h3-nanopi-neo.dts	2019-08-16 03:11:12.000000000 -0500
 +++ b/arch/arm/boot/dts/sun8i-h3-nanopi-neo.dts	2019-08-17 18:05:23.250686843 -0500
-@@ -51,22 +51,82 @@
+@@ -51,22 +51,72 @@
  	status = "okay";
  };
  
@@ -79,14 +79,3 @@
 +	};
 +};
 +
-+&display-engine {
-+	status = "enabled";
-+};
-+
-+&chosen {
-+	&framebuffer-tve {
-+		status = "enabled";
-+	};
-+};
-+
-
