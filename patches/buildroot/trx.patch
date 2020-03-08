@@ -1,13 +1,13 @@
 --- a/package/Config.in
 +++ b/package/Config.in
 @@ -52,6 +52,7 @@ menu "Audio and video applications"
-        source "package/sox/Config.in"
-        source "package/squeezelite/Config.in"
-        source "package/tovid/Config.in"
-+       source "package/trx/Config.in"
-        source "package/tstools/Config.in"
-        source "package/twolame/Config.in"
-        source "package/udpxy/Config.in"
+	source "package/sox/Config.in"
+	source "package/squeezelite/Config.in"
+	source "package/tovid/Config.in"
++	source "package/trx/Config.in"
+	source "package/tstools/Config.in"
+	source "package/twolame/Config.in"
+	source "package/udpxy/Config.in"
 --- a/dev/null	2019-05-14 23:06:29.539627306 -0500
 +++ b/package/trx.mk	2019-05-28 21:26:15.576085497 -0500
 @@ -0,0 +1,27 @@
