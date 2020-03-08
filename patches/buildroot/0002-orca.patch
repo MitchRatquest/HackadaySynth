@@ -1,38 +1,107 @@
---- a/dev/null	2019-05-14 23:06:29.539627306 -0500
-+++ b/package/orca.mk	2019-05-20 12:58:14.151411265 -0500
-@@ -0,0 +1,24 @@
+diff --git a/package/Config.in b/package/Config.in
+index edf7687ab7..dec45dd098 100644
+--- a/package/Config.in
++++ b/package/Config.in
+@@ -48,6 +48,7 @@ menu "Audio and video applications"
+ 	source "package/omxplayer/Config.in"
+ 	source "package/on2-8170-libs/Config.in"
+ 	source "package/opus-tools/Config.in"
++	source "package/orca/Config.in"
+ 	source "package/pulseaudio/Config.in"
+ 	source "package/sox/Config.in"
+ 	source "package/squeezelite/Config.in"
+diff --git a/package/orca/0001-makefile.patch b/package/orca/0001-makefile.patch
+new file mode 100644
+index 0000000000..c7fe07b06e
+--- /dev/null
++++ b/package/orca/0001-makefile.patch
+@@ -0,0 +1,42 @@
++--- a/Makefile	2019-12-15 16:58:55.029896481 -0600
+++++ b/Makefile	2019-12-15 16:56:42.441253994 -0600
++@@ -1,13 +1,9 @@
++-all: debug
+++CC = gcc
+++CFLAGS = -std=c99 -pipe -finput-charset=UTF-8 -Wall -O3 -flto -s
+++LIBS = -lrt -lncursesw -lmenuw -lformw
+++TARGET = orca
+++SRCS = gbuffer.c field.c mark.c bank.c sim.c osc_out.c term_util.c tui_main.c
++
++-.PHONY: debug
++-debug:
++-	@./tool build debug orca
+++all:
+++	$(CC) $(CFLAGS) $(SRCS) $(LIBS) -o $(TARGET)
++
++-.PHONY: release
++-release:
++-	@./tool build release orca
++-
++-.PHONY: clean
++-clean:
++-	@./tool clean
++--- a/term_util.c	2019-12-15 17:02:04.869056696 -0600
+++++ b/term_util.c	2019-12-15 17:02:18.512574820 -0600
++@@ -1,3 +1,4 @@
+++#include <stddef.h>
++ #include "term_util.h"
++ #include <ctype.h>
++ #include <form.h>
++--- a/tui_main.c 2019-12-15 17:05:13.528049984 -0600
+++++ b/tui_main.c	2019-12-15 17:05:22.633786528 -0600
++@@ -10,7 +10,7 @@
++ #include <locale.h>
++
++ #define SOKOL_IMPL
++-#include "sokol_time.h"
+++#include "thirdparty/sokol_time.h"
++ #undef SOKOL_IMPL
++
++ #ifdef FEAT_PORTMIDI
++
+diff --git a/package/orca/Config.in b/package/orca/Config.in
+new file mode 100644
+index 0000000000..f68d116e3d
+--- /dev/null
++++ b/package/orca/Config.in
+@@ -0,0 +1,10 @@
++config BR2_PACKAGE_ORCA
++	bool "orca"
++	depends on BR2_USE_WCHAR
++	select BR2_PACKAGE_NCURSES
++	select BR2_PACKAGE_NCURSES_TARGET_PROGS
++	select BR2_PACKAGE_NCURSES_WCHAR
++
++	help
++		ncurses atypical sequencer
++
+diff --git a/package/orca/orca.mk b/package/orca/orca.mk
+new file mode 100644
+index 0000000000..6d3abba63c
+--- /dev/null
++++ b/package/orca/orca.mk
+@@ -0,0 +1,25 @@
 +################################################################################
 +#
 +# orca
 +#
 +################################################################################
 +
-+ORCA_VERSION =  df0e1276ec2ef795f8a072a6f6768cc7ef73647c
++ORCA_VERSION = 50d1c1cc747afc916c43efe4f005754105d81a08
 +ORCA_SITE = $(call github,hundredrabbits,Orca-c,$(ORCA_VERSION))
 +ORCA_INSTALL_TARGET = YES
 +
 +ORCA_DEPENDENCIES = ncurses
 +
-+
 +define ORCA_BUILD_CMDS
-+$(MAKE) CC="$(TARGET_CC)" LD=$(TARGET_LD) -C $(@D) release
++    $(MAKE) $(TARGET_CONFIGURE_OPTS) -C $(@D) all
 +endef
 +
 +define ORCA_INSTALL_TARGET_CMDS
-+$(INSTALL) -D -m 0755 $(@D)/build/release/orca $(TARGET_DIR)/usr/bin
++    $(INSTALL) -D -m 0755 $(@D)/orca $(TARGET_DIR)/usr/bin
++    $(INSTALL) -d -m 0755 $(TARGET_DIR)/usr/share/orca
++    $(INSTALL) -D -m 0644 $(@D)/examples/*.orca $(TARGET_DIR)/usr/share/orca/
 +endef
 +
 +#$(INSTALL) -D -m 0644 $(@D)/examples/* $(TARGET_DIR)/usr/share/orca
 +
 +$(eval $(generic-package))
---- a/dev/null	2019-05-14 23:06:29.539627306 -0500
-+++ b/package/orca/Config.in	2019-05-20 10:23:22.307106360 -0500
-@@ -0,0 +1,7 @@
-+config BR2_PACKAGE_ORCA
-+	bool "orca"
-+	select BR2_PACKAGE_NCURSES
-+	
-+	help
-+		ncurses atypical sequencer
-+
-
