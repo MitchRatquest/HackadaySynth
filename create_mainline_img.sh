@@ -8,10 +8,10 @@ then
 fi
 
 cd buildroot-"$VERSION"
-patch -p1 < ../patches/buildroot/0000-puredata.patch
-patch -p1 < ../patches/buildroot/0001-trx.patch
-patch -p1 < ../patches/buildroot/0002-orca.patch
-patch -p1 < ../patches/buildroot/0003-ssh-root-x11.patch
+patch -p1 < ../patches/buildroot/puredata.patch
+patch -p1 < ../patches/buildroot/trx.patch
+patch -p1 < ../patches/buildroot/orca.patch
+patch -p1 < ../patches/buildroot/openssh-x11.patch
 cd ..
 
 
