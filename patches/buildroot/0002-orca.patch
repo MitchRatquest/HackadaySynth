@@ -21,8 +21,8 @@ index 0000000000..c7fe07b06e
 +@@ -1,13 +1,9 @@
 +-all: debug
 ++CC = gcc
-++CFLAGS = -std=c99 -pipe -finput-charset=UTF-8 -Wall -O3 -flto -s
-++LIBS = -lrt -lncursesw -lmenuw -lformw
+++CFLAGS = -std=c99 -pipe -O3
+++LIBS = -lrt -lncurses -lmenu -lform
 ++TARGET = orca
 ++SRCS = gbuffer.c field.c mark.c bank.c sim.c osc_out.c term_util.c tui_main.c
 +
@@ -63,23 +63,20 @@ new file mode 100644
 index 0000000000..f68d116e3d
 --- /dev/null
 +++ b/package/orca/Config.in
-@@ -0,0 +1,10 @@
+@@ -0,0 +1,7 @@
 +config BR2_PACKAGE_ORCA
 +	bool "orca"
-+	depends on BR2_USE_WCHAR
 +	select BR2_PACKAGE_NCURSES
-+	select BR2_PACKAGE_NCURSES_TARGET_PROGS
-+	select BR2_PACKAGE_NCURSES_WCHAR
 +
 +	help
-+		ncurses atypical sequencer
++		Orca is an esoteric programming language designed to quickly create procedural sequencers
 +
 diff --git a/package/orca/orca.mk b/package/orca/orca.mk
 new file mode 100644
 index 0000000000..6d3abba63c
 --- /dev/null
 +++ b/package/orca/orca.mk
-@@ -0,0 +1,25 @@
+@@ -0,0 +1,23 @@
 +################################################################################
 +#
 +# orca
@@ -101,7 +98,5 @@ index 0000000000..6d3abba63c
 +    $(INSTALL) -d -m 0755 $(TARGET_DIR)/usr/share/orca
 +    $(INSTALL) -D -m 0644 $(@D)/examples/*.orca $(TARGET_DIR)/usr/share/orca/
 +endef
-+
-+#$(INSTALL) -D -m 0644 $(@D)/examples/* $(TARGET_DIR)/usr/share/orca
 +
 +$(eval $(generic-package))
