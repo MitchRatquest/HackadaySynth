@@ -1,19 +1,28 @@
---- a/dev/null	2019-05-14 23:06:29.539627306 -0500
+--- a/package/Config.in
++++ b/package/Config.in
+@@ -52,6 +52,7 @@ menu "Audio and video applications"
+	source "package/sox/Config.in"
+	source "package/squeezelite/Config.in"
+	source "package/tovid/Config.in"
++	source "package/trx/Config.in"
+	source "package/tstools/Config.in"
+	source "package/twolame/Config.in"
+	source "package/udpxy/Config.in"
+--- a/package/trx/trx.mk	1969-12-31 18:00:00.000000000 -0600
 +++ b/package/trx/trx.mk	2019-05-28 21:26:15.576085497 -0500
-@@ -0,0 +1,28 @@
+@@ -0,0 +1,26 @@
 +################################################################################
 +#
 +# trx
 +#
 +################################################################################
 +
-+TRX_VERSION =  0.4
++TRX_VERSION =  0.5
 +TRX_SOURCE = trx-$(TRX_VERSION).tar.gz
 +TRX_SITE= http://www.pogo.org.uk/~mark/trx/releases
 +TRX_INSTALL_STAGING = YES
 +TRX_INSTALL_TARGET = YES
 +TRX_AUTORECONF = YES 
-+#TRX_CONF_OPTS = --disable-portaudio --disable-portmidi --no-recursion
 +
 +TRX_DEPENDENCIES = opus ortp
 +
@@ -24,14 +33,13 @@
 +
 +define TRX_INSTALL_TARGET_CMDS
 +	$(INSTALL) -D -m 0755 $(@D)/tx $(TARGET_DIR)/usr/bin
-+	$(INSTALL) -D -m 0755 $(@D)/tx $(TARGET_DIR)/usr/bin
++	$(INSTALL) -D -m 0755 $(@D)/rx $(TARGET_DIR)/usr/bin
 +endef
-+
 +
 +$(eval $(generic-package))
 
 
---- a/dev/null	2019-05-14 23:06:29.539627306 -0500
+--- a/package/trx/Config.in	1969-12-31 18:00:00.000000000 -0600
 +++ b/package/trx/Config.in	2019-05-28 21:24:48.833463902 -0500
 @@ -0,0 +1,9 @@
 +config BR2_PACKAGE_TRX
@@ -41,21 +49,6 @@
 +	select BR2_PACKAGE_ORTP
 +	
 +	help
-+		Streams alsa endpoints over UDP using oRTP and opus
++		realtime audio stream application using libopus and libortp
 +
 
---- a/dev/null	2019-05-14 23:06:29.539627306 -0500
-+++ b/package/trx/0001-null.patch	2019-05-28 21:29:56.948495708 -0500
-@@ -0,0 +1,12 @@
-+--- a/tx.c	2019-05-28 21:27:29.898892270 -0500
-++++ b/tx.c	2019-05-28 21:27:47.966595516 -0500
-+@@ -240,7 +240,7 @@
-+ 
-+ 	ortp_init();
-+ 	ortp_scheduler_init();
-+-	ortp_set_log_level_mask(ORTP_WARNING|ORTP_ERROR);
-++	ortp_set_log_level_mask(NULL, ORTP_WARNING|ORTP_ERROR);
-+ 	session = create_rtp_send(addr, port);
-+ 	assert(session != NULL);
-+ 
-+

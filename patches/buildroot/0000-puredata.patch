@@ -1,36 +1,39 @@
 --- a/package/Config.in	2017-05-25 14:10:17.310337000 -0500
 +++ b/package/Config.in	2017-05-25 18:12:12.459952513 -0500
-@@ -4,6 +4,7 @@
- 	source "package/skeleton/Config.in"
- 
- menu "Audio and video applications"
+@@ -48,6 +48,7 @@ menu "Audio and video applications"
+	source "package/on2-8170-libs/Config.in"
+	source "package/opus-tools/Config.in"
+	source "package/pulseaudio/Config.in"
 +	source "package/puredata/Config.in"
- 	source "package/alsa-utils/Config.in"
- 	source "package/atest/Config.in"
- 	source "package/aumix/Config.in"
+	source "package/sox/Config.in"
+	source "package/squeezelite/Config.in"
+	source "package/tovid/Config.in"
+
 --- a/package/puredata/Config.in	1969-12-31 18:00:00.000000000 -0600
 +++ b/package/puredata/Config.in	2017-05-25 18:19:12.070549743 -0500
-@@ -0,0 +1,8 @@
+@@ -0,0 +1,11 @@
 +config BR2_PACKAGE_PUREDATA
 +	bool "puredata"
++	depends on BR2_INSTALL_LIBSTDCPP
++	select BR2_PACKAGE_XORG7
 +	select BR2_PACKAGE_TK
 +	select BR2_PACKAGE_TCL
-+	
++	select BR2_PACKAGE_ALSA_UTILS
++
 +	help
-+		graphic realtime audio programming language
++		Puredata is a free real-time computer music system
 +
 --- a/package/puredata/puredata.mk	2017-05-25 14:10:17.310337000 -0500
 +++ b/package/puredata/puredata.mk	2017-05-25 18:18:50.406831167 -0500
-@@ -0,0 +1,22 @@
+@@ -0,0 +1,21 @@
 +################################################################################
 +#
 +# puredata
 +#
 +################################################################################
 +
-+PUREDATA_VERSION =  0.50-2
-+PUREDATA_SOURCE = pd-$(PUREDATA_VERSION).src.tar.gz
-+PUREDATA_SITE = http://msp.ucsd.edu/Software
++PUREDATA_VERSION =  d8d637b6c53833c49c47c60ff78e3fbfd0d596c7
++PUREDATA_SITE = $(call github,pure-data,pure-data,$(PUREDATA_VERSION))
 +PUREDATA_INSTALL_STAGING = YES
 +PUREDATA_INSTALL_TARGET = YES
 +PUREDATA_AUTORECONF = YES 
