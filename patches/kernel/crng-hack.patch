@@ -1,0 +1,18 @@
+--- a/drivers/char/random.c	2020-01-04 00:52:16.928960432 -0600
++++ b/drivers/char/random.c	2020-01-04 00:54:57.325585807 -0600
+@@ -880,12 +880,12 @@
+ 		}
+ 		crng->state[i] ^= rv;
+ 	}
+-	if (trust_cpu && arch_init && crng == &primary_crng) {
++//	if (trust_cpu && arch_init && crng == &primary_crng) {
+ 		invalidate_batched_entropy();
+ 		numa_crng_init();
+ 		crng_init = 2;
+ 		pr_notice("random: crng done (trusting CPU's manufacturer)\n");
+-	}
++//	}
+ 	crng->init_time = jiffies - CRNG_RESEED_INTERVAL - 1;
+ }
+ 
+
